@@ -590,7 +590,7 @@ async function chooseLens(g,label){if(busy)return;busy=true;lens=g;track('lens-'
 
 /* ================= conversation engine ================= */
 let busy=false;
-async function ask(k){if(busy)return;busy=true;sugs.querySelectorAll('button').forEach(b=>b.disabled=true);lastAsked[k]=++tick;track('q-'+k);try{QLOG.push(I[k].q)}catch(e){}closeSheet();
+async function ask(k){if(busy)return;busy=true;sugs.querySelectorAll('button').forEach(b=>b.disabled=true);lastAsked[k]=++tick;track('q-'+k);try{ping('q',{k,text:I[k].q})}catch(e){}closeSheet();
  const Q=I[k];
  addMsg('me',`<div class="bub">${Q.q}</div><div class="meta"><span>${now()}</span><span class="seen">Seen</span></div>`);VOICE.stop();VOICE.queue(Q.q,650);
  await sleep(250);
@@ -653,7 +653,7 @@ function aiViz(v){try{if(!v||!VIZ[v.type])return'';
 const HIST=[];
 const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const md=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*/g,'');
-async function askAI(q){q=q.trim();if(!q||busy)return;busy=true;track('ai');try{QLOG.push(q)}catch(e){}closeSheet();
+async function askAI(q){q=q.trim();if(!q||busy)return;busy=true;track('ai');closeSheet();
  sugs.querySelectorAll('button').forEach(b=>b.disabled=true);$('#send').disabled=true;
  addMsg('me',`<div class="bub">${esc(q)}</div><div class="meta"><span>${now()}</span><span class="seen">Seen</span></div>`);VOICE.stop();VOICE.queue(q,650);
  await sleep(200);
@@ -664,7 +664,7 @@ async function askAI(q){q=q.trim();if(!q||busy)return;busy=true;track('ai');try{
  try{const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),20000);
   const r=await fetch('/.netlify/functions/ask',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({question:q,history:HIST.slice(-4)}),signal:ctl.signal});
   clearTimeout(to);data=await r.json().catch(()=>null);if(!r.ok||!data||!data.answer){err=(data&&data.error)||'offline';window.__dbg=(data&&data.debug)||['http '+r.status];data=null}}catch(e){err='offline';window.__dbg=[String(e)]}
- clearInterval(tmr);col.innerHTML='';
+ clearInterval(tmr);col.innerHTML='';try{ping('ai',data?{text:q,covered:data.covered!==false,topic:data.topic||'',model:data.model||''}:{text:q,failed:true})}catch(e){}
  if(!data){const b=document.createElement('div');b.className='bub';col.appendChild(b);
   const msg=err&&err!=='offline'?err:'I couldn\'t reach the AI just now. These questions always work, so try one below.';
   await streamInto(b,esc(msg));VOICE.queue(msg);if(window.__dbg)col.insertAdjacentHTML('beforeend',`<details class="how"><summary>Technical details</summary><div style="font:11px monospace;background:#fff3f3;padding:8px;border-radius:8px;margin-top:6px;word-break:break-word">${esc(window.__dbg.join('\n')).replace(/\n/g,'<br>')}</div></details>`);col.insertAdjacentHTML('beforeend',`<div class="meta"><span>${now()}</span></div>`);
@@ -701,24 +701,40 @@ $('#askf').addEventListener('submit',e=>{e.preventDefault();const v=$('#qin').va
   try{rec.start()}catch(_){mic.classList.remove('on');rec=null}};})();
 
 
-/* ================= visit alerts (Telegram via Netlify Function) ================= */
+/* ================= activity tracker (private dashboard + Telegram alerts) ================= */
 const _p=new URLSearchParams(location.search);
 const _seg=location.pathname.split('/').filter(s=>s&&!/\.html?$/i.test(s));
-const LINK_RAW=(_p.get('for')||_seg[0]||'').trim().slice(0,40), LINK_TAG=(_p.get('t')||_seg[1]||'').trim().slice(0,40);
-const LINK_LABEL=(()=>{const k=LINK_RAW.toLowerCase().replace(/[^a-z]/g,'');const P={paytm:'Paytm Pi',bank:'Banking',bfsi:'BFSI',fintech:'Fintech',ai:'AI product',recruiter:'Recruiter',sales:'Sales',tech:'Engineering'};return P[k]||LINK_RAW.replace(/[-_]+/g,' ')})();
+const LINK_RAW=(_p.get('for')||_seg[0]||'').trim().slice(0,40);
+const LINK_LABEL=(()=>{const k=LINK_RAW.toLowerCase().replace(/[^a-z]/g,'');const P={paytm:'Paytm Pi',bank:'Banking',bfsi:'BFSI',fintech:'Fintech',ai:'AI product',recruiter:'Recruiter',sales:'Sales',tech:'Engineering'};return P[k]||(LINK_RAW?LINK_RAW.replace(/[-_]+/g,' '):'Main')})();
 const OWNER=(()=>{try{if(_p.get('me')==='1')localStorage.setItem('ps-owner','1');if(_p.get('me')==='0')localStorage.removeItem('ps-owner');return localStorage.getItem('ps-owner')==='1'}catch(e){return false}})();
-if(_p.has('me'))setTimeout(()=>toast(OWNER?'Owner mode on: your visits on this device won\'t send alerts':'Owner mode off'),1500);
-function ping(ev,extra={}){if(OWNER)return;const body=JSON.stringify({ev,link:LINK_LABEL,tag:LINK_TAG,page:LANG,ref:document.referrer||'',...extra});
- try{if(ev==='summary'&&navigator.sendBeacon){navigator.sendBeacon('/.netlify/functions/notify',new Blob([body],{type:'text/plain'}));return}
-  fetch('/.netlify/functions/notify',{method:'POST',body,keepalive:true,headers:{'content-type':'text/plain'}}).catch(()=>{})}catch(e){}}
-(()=>{const key='ps-v-'+LINK_RAW+'|'+LINK_TAG;try{if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');ping('visit')}}catch(e){ping('visit')}})();
-document.addEventListener('click',e=>{const el=e.target.closest('a,button');if(!el)return;const h=el.getAttribute('href')||'';
+if(_p.has('me'))setTimeout(()=>toast(OWNER?'Owner mode on: your visits on this device are not tracked':'Owner mode off'),1500);
+const _id=n=>Array.from(crypto.getRandomValues(new Uint8Array(n)),b=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%32]).join('');
+const VID=(()=>{try{let v=localStorage.getItem('ps-vid');if(!v){v=_id(8);localStorage.setItem('ps-vid',v)}return v}catch(e){return _id(8)}})();
+const SID=(()=>{try{let s=sessionStorage.getItem('ps-sid');const fresh=!s;if(!s){s=_id(8);sessionStorage.setItem('ps-sid',s)}return{s,fresh}}catch(e){return{s:_id(8),fresh:true}}})();
+function ping(ev,data={},beacon=false){if(OWNER)return;const body=JSON.stringify({vid:VID,sid:SID.s,ev,data,link:LINK_LABEL,page:LANG,ref:document.referrer||''});
+ try{if(beacon&&navigator.sendBeacon){navigator.sendBeacon('/.netlify/functions/track',new Blob([body],{type:'text/plain'}));return}
+  fetch('/.netlify/functions/track',{method:'POST',body,keepalive:true,headers:{'content-type':'text/plain'}}).catch(()=>{})}catch(e){}}
+if(SID.fresh)ping('visit');
+let _act=0,_since=document.visibilityState==='visible'?Date.now():0;
+const _take=()=>{if(_since){_act+=(Date.now()-_since)/1000;_since=0}const s=Math.round(_act);_act=0;return s};
+setInterval(()=>{if(document.visibilityState==='visible')ping('hb')},45000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){const s=_take();if(s>0)ping('leave',{secs:s},true)}else _since=Date.now()});
+addEventListener('pagehide',()=>{const s=_take();if(s>0)ping('leave',{secs:s},true)});
+document.addEventListener('click',e=>{const el=e.target.closest('a,button,summary,[data-zoom]');if(!el)return;const h=(el.getAttribute&&el.getAttribute('href'))||'';
  if(h.startsWith('tel:'))ping('call');else if(h.startsWith('mailto:'))ping('email');else if(/linkedin\.com/i.test(h))ping('linkedin');
- else if(/\.pdf($|\?)/i.test(h)||el.id==='dl')ping('cv')},true);
-const QLOG=[];let _qsent=0;
-function flushQs(){if(QLOG.length>_qsent){ping('summary',{qs:QLOG.slice(_qsent)});_qsent=QLOG.length}}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushQs()});
-addEventListener('pagehide',flushQs);
+ else if(/\.pdf($|\?)/i.test(h)||el.id==='dl')ping('cv');
+ else if(el.matches('[data-award]'))ping('card',{what:'award photo'});
+ else if(el.matches('[data-zoom]'))ping('card',{what:'profile photo'});
+ else if(el.matches('[data-more-exp]'))ping('card',{what:'all experience'});
+ else if(el.matches('[data-src]'))ping('card',{what:'source: '+el.dataset.src});
+ else if(el.matches('.tabs button'))ping('card',{what:'tab: '+el.dataset.tab});
+ else if(el.matches('a.lang'))ping('lang',{what:'switched language'});
+ else if(el.matches('summary'))ping('card',{what:'how I found this'});
+ else if(el.id==='mic')ping('mic',{what:'voice question'});
+ else if(el.id==='snd')ping('voice',{what:'voice toggle'});
+ else if(el.matches('[data-say]'))ping('listen',{what:'listen'});
+ else if(el.matches('[data-cp],[data-copy]'))ping('copy',{what:'copy'});
+ else if(el.id==='menu'||el.id==='menu2')ping('card',{what:'all topics menu'});},true);
 
 /* ================= tab bar ================= */
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('act',x===b));
