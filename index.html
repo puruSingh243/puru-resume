@@ -342,7 +342,7 @@ details.how .ok{color:var(--green);font-weight:600}
       <div class="inbar">
         <button class="ib" id="menu2" aria-label="All topics" data-i="grid"></button>
         <form class="askf" id="askf" autocomplete="off"><input id="qin" maxlength="300" placeholder="Ask anything about Puru…" aria-label="Ask your own question"><button type="button" class="ib" id="mic" aria-label="Ask by voice" data-i="mic"></button><button type="submit" class="ib send" id="send" aria-label="Send" data-i="send"></button></form>
-        <button class="ib" id="snd" aria-label="Voice on" aria-pressed="true"></button>
+        <button class="ib" id="snd" aria-label="Voice off" aria-pressed="false"></button>
       </div>
     </div>
 
@@ -519,7 +519,7 @@ document.querySelectorAll('[data-tel]').forEach(a=>a.addEventListener('click',()
 
 /* ================= sound ================= */
 const LANG=document.documentElement.lang.startsWith('hi')?'hi':'en';
-const VOICE=(()=>{const ok='speechSynthesis' in window;let on=true,q=[],running=false,v=null,gen=0;const btn=$('#snd');
+const VOICE=(()=>{const ok='speechSynthesis' in window;let on=LANG==='hi',q=[],running=false,v=null,gen=0;const btn=$('#snd');
  function pick(){if(!ok)return;const vs=speechSynthesis.getVoices();const want=LANG==='hi'?/^hi/i:/^en/i;const cand=vs.filter(x=>want.test(x.lang));
   const rank=x=>(/natural|neural|online|wavenet|premium|enhanced/i.test(x.name)?0:/google/i.test(x.name)?1:(LANG==='en'&&/en-IN/i.test(x.lang))?2:(LANG==='en'&&/en-GB/i.test(x.lang))?3:4);
   cand.sort((a,b)=>rank(a)-rank(b));v=cand[0]||null}
@@ -527,12 +527,12 @@ const VOICE=(()=>{const ok='speechSynthesis' in window;let on=true,q=[],running=
  const clean=t=>t.replace(/<[^>]+>/g,' ').replace(/~(\d+)\+/g,LANG==='hi'?'$1 से ज़्यादा':'over $1').replace(/(\d+)\+/g,LANG==='hi'?'$1 से ज़्यादा':'$1 plus').replace(/[•⋯]/g,' ').replace(/\s*·\s*/g,', ').replace(/\s+/g,' ').trim();
  const split=t=>clean(t).split(/(?<=[।.?!])\s+/).map(x=>x.trim()).filter(Boolean);
  async function run(my){running=true;
-  while(q.length&&my===gen&&on){const it=q.shift();
+  while(q.length&&my===gen){const it=q.shift();
    await new Promise(res=>{const u=new SpeechSynthesisUtterance(it.t);if(v){u.voice=v;u.lang=v.lang}else u.lang=LANG==='hi'?'hi-IN':'en-IN';
     u.rate=LANG==='hi'?0.9:0.96;u.pitch=1;u.volume=1;u.onend=u.onerror=()=>res();speechSynthesis.speak(u)});
    if(my===gen)await new Promise(r=>setTimeout(r,it.gap))}
   if(my===gen)running=false}
- function queue(text,gapAfter=550){if(!ok||!on||!text)return;const ss=split(text);ss.forEach((x,i)=>q.push({t:x,gap:i===ss.length-1?gapAfter:340}));if(!running)run(gen)}
+ function queue(text,gapAfter=550,force=false){if(!ok||(!on&&!force)||!text)return;const ss=split(text);ss.forEach((x,i)=>q.push({t:x,gap:i===ss.length-1?gapAfter:340}));if(!running)run(gen)}
  function stop(){gen++;q=[];running=false;if(ok)speechSynthesis.cancel()}
  function paint(){btn.innerHTML=ic(on?'sound':'mute');btn.setAttribute('aria-pressed',on);btn.setAttribute('aria-label',on?(LANG==='hi'?'आवाज़ चालू':'Voice on'):(LANG==='hi'?'आवाज़ बंद':'Voice off'))}
  btn.onclick=()=>{on=!on;if(!on)stop();paint();toast(on?(LANG==='hi'?'आवाज़ चालू है':'Voice on: answers will be read aloud'):(LANG==='hi'?'आवाज़ बंद है':'Voice off'))};
@@ -623,7 +623,7 @@ document.addEventListener('click',async e=>{
    else ask(k==='awards'?'awards':'creds');return}
  if(e.target.closest('[data-more-exp]')){e.target.closest('.card').outerHTML=cardExp();return}
  if(e.target.closest('[data-call]'))track('call');
- const say=e.target.closest('[data-say]');if(say){if(!VOICE.ok){toast('Read-aloud is not supported here');return}VOICE.stop();VOICE.queue(say.closest('.col').dataset.text);return}
+ const say=e.target.closest('[data-say]');if(say){if(!VOICE.ok){toast('Read-aloud is not supported here');return}VOICE.stop();VOICE.queue(say.closest('.col').dataset.text,550,true);return}
  const cp=e.target.closest('[data-cp]');if(cp){try{await navigator.clipboard.writeText(cp.closest('.col').dataset.text);toast('Copied')}catch(_){toast('Copy not available')}return}
  const ce=e.target.closest('[data-copy]');if(ce){try{await navigator.clipboard.writeText(ce.dataset.copy);toast('Email copied')}catch(_){toast(ce.dataset.copy)}return}
 });
@@ -641,6 +641,13 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closeLB()}if(e.
 $('#dl').onclick=()=>{const a=document.createElement('a');a.href='Purusottam_Singh_Resume.pdf';a.download='';a.click();toast('Downloading CV')};
 
 
+function aiViz(v){try{if(!v||!VIZ[v.type])return'';
+ const L=x=>esc(String(x)).slice(0,22);let args;
+ if(v.type==='flow')args=[v.items.slice(0,5).map(L),-2];
+ else if(v.type==='hub')args=[L(v.center||'Puru'),v.items.slice(0,5).map(L)];
+ else if(v.type==='stats')args=[v.items.slice(0,3).map(p=>[L(p[0]).slice(0,6),L(p[1])])];
+ else return'';
+ return vizCard([v.type,L(v.title||'At a glance'),...args])}catch(e){return''}}
 /* ================= AI answers (Gemini, with Groq fallback, via Netlify Function) ================= */
 const HIST=[];
 const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -664,13 +671,20 @@ async function askAI(q){q=q.trim();if(!q||busy)return;busy=true;track('ai');clos
  col.insertAdjacentHTML('beforeend',`<span class="aitag">${ic('spark','i s')}AI answer · from his CV</span>`);
  const b=document.createElement('div');b.className='bub';col.appendChild(b);VOICE.queue(data.answer);
  await streamInto(b,md(data.answer));
+ const T=data.topic&&I[data.topic]?I[data.topic]:null;
+ if(T&&T.viz)col.insertAdjacentHTML('beforeend',vizCard(T.viz));
+ else if(data.viz)col.insertAdjacentHTML('beforeend',aiViz(data.viz));
+ if(T&&T.card)col.insertAdjacentHTML('beforeend',CARDS[T.card]());
+ if((!data.sources||!data.sources.length)&&T&&T.src)data.sources=T.src;
  const ex=[];
  if(data.sources&&data.sources.length)ex.push(`<div class="src">${data.sources.filter(s=>SRCNAME[s]).map(s=>`<button type="button" data-src="${s}">${logo(SRCLOGO[s],16,'lg')}${SRCNAME[s]}</button>`).join('')}</div>`);
  ex.push(`<details class="how"><summary>${ic('check','i s')}How I found this</summary><ol><li>Understood your question</li><li>Searched only his CV</li><li>Answered by ${data.model==='groq'?'Llama on Groq (backup model)':'Google Gemini'}</li><li class="ok">Grounded in the CV, no client names shared</li></ol></details>`);
  ex.push(`<div class="meta"><span>${now()}</span><span class="tools"><button type="button" data-say>${ic('speak','i s')}Listen</button><button type="button" data-cp>${ic('copy','i s')}Copy</button></span></div>`);
  col.insertAdjacentHTML('beforeend',ex.join(''));col.dataset.text=data.answer.replace(/\*/g,'');
  HIST.push({role:'user',content:q},{role:'assistant',content:data.answer});
- setTimeout(scroll,40);busy=false;$('#send').disabled=false;setSugs(pickSugs([]));}
+ setTimeout(scroll,40);busy=false;$('#send').disabled=false;
+ if(data.topic&&I[data.topic])lastAsked[data.topic]=++tick;
+ setSugs(pickSugs((data.followups||[]).filter(k=>I[k])));}
 $('#askf').addEventListener('submit',e=>{e.preventDefault();const v=$('#qin').value;$('#qin').value='';askAI(v)});
 
 /* ================= voice input (browser speech recognition) ================= */
