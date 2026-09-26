@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chat with Purusottam Singh</title>
+<meta name="description" content="Don't read my résumé. Ask it. Solutions Engineering @ Kore.ai. Agentic and conversational AI pre-sales for BFSI.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chat with Purusottam Singh">
+<meta property="og:description" content="Don't read my résumé. Ask it.">
+<meta property="og:image" content="https://purusottam-singh.netlify.app/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a66c2'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='26' fill='white' text-anchor='middle'%3EPS%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f4f2ee; --card:#fff; --line:#e0dfdc; --ink:rgba(0,0,0,.9); --muted:rgba(0,0,0,.6); --faint:rgba(0,0,0,.45);
+  --blue:#0a66c2; --blue-d:#004182; --blue-t:#e8f0fb; --green:#057642; --gold:#915907; --gold-t:#fcf1dc;
+  --bubble:#f3f2ef; --t-fast:160ms; --t-med:260ms; --ease:cubic-bezier(.2,.8,.2,1);
+  --font:-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","Fira Sans",Ubuntu,Oxygen,"Oxygen Sans",Cantarell,"Droid Sans","Apple Color Emoji","Segoe UI Emoji",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{overflow-x:hidden;font-family:var(--font);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--blue)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+.i{width:22px;height:22px;flex:none;display:inline-block;vertical-align:middle}
+.i.s{width:18px;height:18px}
+
+/* ---------- layout ---------- */
+.shell{display:grid;grid-template-columns:minmax(0,1fr);max-width:1128px;margin:0 auto;min-height:100%}
+.app{min-width:0;overflow:hidden;position:relative;display:flex;flex-direction:column;height:100dvh;background:var(--card);max-width:640px;width:100%;margin:0 auto}
+.rail{display:none}
+@media (min-width:1000px){
+  body{padding:24px 0}
+  .shell{grid-template-columns:300px minmax(0,1fr);gap:24px;padding:0 24px}
+  .rail{display:block}
+  .app{height:calc(100dvh - 48px);border:1px solid var(--line);border-radius:12px;overflow:hidden;max-width:none}
+}
+
+/* ---------- left rail (desktop) ---------- */
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;position:sticky;top:24px}
+.pcard .cover{height:70px;background:linear-gradient(120deg,#0a66c2,#378fe9 55%,#70b5f9)}
+.pcard .av{margin:-38px auto 0;width:76px;height:76px}
+.pcard .body{padding:10px 18px 18px;text-align:center}
+.pcard h2{font-size:1.15rem;font-weight:600}
+.pcard .hl{color:var(--muted);font-size:.9rem;margin-top:2px}
+.pcard .loc{color:var(--faint);font-size:.82rem;margin-top:6px}
+.pcard hr{border:none;border-top:1px solid var(--line);margin:14px -18px}
+.pcard .row{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);padding:3px 0;text-align:left}
+.pcard .row b{color:var(--blue);font-weight:600}
+.pcard .btns{display:grid;gap:8px;margin-top:14px}
+
+/* ---------- avatar ---------- */
+.av{position:relative;border-radius:50%;background:var(--card);border:2px solid var(--card);flex:none}
+.av img,.av span{width:100%;height:100%;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:linear-gradient(135deg,#0a66c2,#70b5f9);color:#fff;font-weight:600}
+.av.on::after{content:"";position:absolute;right:0;bottom:0;width:26%;height:26%;border-radius:50%;background:#01754f;border:2px solid #fff}
+
+/* ---------- app bar ---------- */
+.bar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--card);z-index:5}
+.bar .ib{text-decoration:none;background:none;border:none;padding:6px;border-radius:50%;color:var(--muted);display:grid;place-items:center}
+.bar .ib:hover{background:#eee}
+.bar .av{width:40px;height:40px}
+.bar .av span{font-size:.9rem}
+.bar .who{flex:1;min-width:0}
+.bar .who b{display:block;font-weight:600;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .who small{display:block;color:var(--muted);font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .who small .st{color:#01754f}
+
+/* ---------- thread ---------- */
+.thread{flex:1;overflow-y:auto;padding:0 0 12px;scroll-behavior:smooth;overscroll-behavior:contain}
+.intro{padding:0 0 8px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.intro .cover{height:84px;background:linear-gradient(120deg,#0a66c2,#378fe9 55%,#70b5f9);position:relative;overflow:hidden}
+.intro .cover::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.35),transparent 45%)}
+.intro .top{padding:0 16px}
+.intro .av{width:96px;height:96px;margin-top:-48px;border-width:4px}
+.intro .av span{font-size:1.9rem}
+.intro h1{font-size:1.35rem;font-weight:600;margin-top:8px;display:flex;align-items:center;gap:6px}
+.intro .hl{font-size:.95rem;margin-top:2px}
+.intro .loc{color:var(--faint);font-size:.85rem;margin-top:4px}
+.intro .loc b{color:var(--blue);font-weight:600}
+.intro .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+@media (max-width:480px){.intro .acts .pill{padding:5px 12px;font-size:.88rem}.co{grid-template-columns:36px 1fr}.co .logo{width:36px!important;height:36px!important}.role ul{margin-left:14px}}
+.intro .note{margin:12px 16px 4px;padding:10px 12px;border-radius:8px;background:var(--bubble);color:var(--muted);font-size:.83rem;display:flex;gap:8px}
+.hello{margin:10px 16px 0;padding:8px 12px;border-radius:8px;background:var(--gold-t);color:var(--gold);font-weight:600;font-size:.88rem;display:none}
+.hello.on{display:block}
+
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:999px;padding:6px 16px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--blue);color:var(--blue);background:#fff;transition:background var(--t-fast),box-shadow var(--t-fast)}
+.pill:hover{background:var(--blue-t);box-shadow:inset 0 0 0 1px var(--blue)}
+.pill.solid{background:var(--blue);color:#fff}
+.pill.solid:hover{background:var(--blue-d);border-color:var(--blue-d)}
+.pill.grey{border-color:rgba(0,0,0,.6);color:var(--muted)}
+.pill.grey:hover{background:#eee;box-shadow:inset 0 0 0 1px rgba(0,0,0,.6)}
+.pill:active{transform:scale(.97)}
+
+.day{text-align:center;color:var(--faint);font-size:.78rem;font-weight:600;margin:14px 0 6px;letter-spacing:.02em}
+.msg{display:flex;gap:8px;padding:4px 14px;align-items:flex-end;animation:rise var(--t-med) var(--ease) both}
+.msg .av{width:32px;height:32px;border:none}
+.msg .av span{font-size:.7rem}
+.msg .col{max-width:84%;display:flex;flex-direction:column;gap:6px;min-width:0}
+.msg .col:has(.card){max-width:calc(100% - 40px);flex:1}
+.msg.me{justify-content:flex-end}
+.msg.me .col{align-items:flex-end}
+.bub{padding:10px 13px;border-radius:18px 18px 18px 4px;background:var(--bubble);font-size:.97rem;line-height:1.5;word-wrap:break-word}
+.msg.me .bub{background:var(--blue);color:#fff;border-radius:18px 18px 4px 18px}
+.bub b{font-weight:600}
+.meta{font-size:.74rem;color:var(--faint);padding:0 4px;display:flex;gap:10px;align-items:center}
+.meta .seen{color:var(--blue)}
+.msg.bot .av{visibility:hidden}.msg.bot.first .av{visibility:visible}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+.wd{animation:fade var(--t-med) var(--ease) both}
+@keyframes fade{from{opacity:0}}
+
+.typing{display:inline-flex;gap:4px;padding:12px 14px;border-radius:18px 18px 18px 4px;background:var(--bubble)}
+.typing i{width:7px;height:7px;border-radius:50%;background:rgba(0,0,0,.45);animation:dot 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+.think{font-size:.78rem;color:var(--muted);padding:0 4px}
+
+/* sources + reasoning */
+.src{display:flex;flex-wrap:wrap;gap:6px}
+.src button{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px;font-size:.78rem;color:var(--muted)}
+.src button:hover{border-color:var(--blue);color:var(--blue)}
+.src .lg{width:16px;height:16px;border-radius:4px;display:grid;place-items:center;color:#fff;font-size:.6rem;font-weight:700}
+details.how{font-size:.8rem;color:var(--muted);padding:0 4px}
+details.how summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:4px;font-weight:600}
+details.how summary::-webkit-details-marker{display:none}
+details.how ol{margin:6px 0 0 18px}
+details.how li{margin:2px 0}
+details.how .ok{color:var(--green);font-weight:600}
+.tools{display:flex;gap:4px}
+.tools button{background:none;border:none;border-radius:6px;padding:4px 6px;color:var(--muted);display:inline-flex;align-items:center;gap:4px;font-size:.78rem;font-weight:600}
+.tools button:hover{background:#eee}
+.tools button.on{color:var(--blue)}
+
+/* rich cards */
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;width:100%;animation:rise var(--t-med) var(--ease) both}
+.card h4{font-size:1rem;font-weight:600;padding:12px 14px 0}
+.exp{padding:6px 14px 12px}
+.co{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.co:last-child{border-bottom:none}
+.logo{width:44px;height:44px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.05rem}
+.co b.cn,.role b.rt{font-weight:600;display:block}
+.role li b{font-weight:600}
+.co .sub{font-size:.85rem;color:var(--muted)}
+.co .dim{font-size:.82rem;color:var(--faint)}
+.roles{position:relative;margin-top:6px}
+.role{position:relative;padding:4px 0 8px 18px}
+.role::before{content:"";position:absolute;left:3px;top:10px;width:7px;height:7px;border-radius:50%;background:#c6c6c6}
+.role::after{content:"";position:absolute;left:6px;top:20px;bottom:-4px;width:1px;background:#d0d0d0}
+.role:last-child::after{display:none}
+.role ul{margin:6px 0 0 16px;font-size:.88rem;color:var(--ink)}
+.role li{margin:3px 0}
+.more-btn{display:block;width:100%;border:none;border-top:1px solid var(--line);background:#fff;padding:10px;font-weight:600;color:var(--muted);font-size:.9rem}
+.more-btn:hover{background:#f7f7f7}
+.lst{padding:4px 14px 10px}
+.li{display:grid;grid-template-columns:40px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start}
+.li:last-child{border-bottom:none}
+.li .ic{width:40px;height:40px;border-radius:8px;display:grid;place-items:center}
+.li b{font-weight:600;display:block;font-size:.95rem}
+.li .sub{font-size:.85rem;color:var(--muted)}
+.skills{padding:6px 14px 14px}
+.skills h5{font-size:.85rem;font-weight:600;margin:10px 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.83rem;padding:4px 10px;border-radius:999px;background:var(--bubble);border:1px solid var(--line)}
+.file{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.file .pdf{width:40px;height:48px;border-radius:6px;background:#cc1016;color:#fff;font-weight:700;font-size:.72rem;display:grid;place-items:center}
+.file b{display:block;font-weight:600;font-size:.92rem}
+.file small{color:var(--muted)}
+.file .pill{margin-left:auto;padding:5px 14px}
+.contact{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px}
+.hl-flash{animation:flash 1.4s var(--ease)}
+@keyframes flash{0%,40%{background:var(--gold-t)}}
+
+/* ---------- composer ---------- */
+.composer{border-top:1px solid var(--line);background:#fff;padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
+.sugs{display:flex;gap:8px;overflow-x:auto;padding:2px 12px 8px;scrollbar-width:none}
+.sugs::-webkit-scrollbar{display:none}
+.sugs button{flex:none;border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:999px;padding:6px 14px;font-weight:600;font-size:.88rem;white-space:nowrap;animation:rise var(--t-med) var(--ease) both;transition:background var(--t-fast)}
+.sugs button:hover{background:var(--blue-t)}
+.sugs button:active{transform:scale(.96)}
+.sugs button:disabled{opacity:.4;cursor:default}
+.inbar{display:flex;align-items:center;gap:8px;padding:0 12px}
+.inbar .ib{background:none;border:none;color:var(--muted);padding:6px;border-radius:50%;display:grid;place-items:center}
+.inbar .ib:hover{background:#eee}
+.fake{flex:1;background:var(--bubble);border-radius:8px;padding:10px 12px;color:var(--faint);font-size:.9rem;text-align:left;border:none}
+.fake:hover{background:#ebe9e5}
+
+/* ---------- tab bar ---------- */
+.tabs{display:flex;border-top:1px solid var(--line);background:#fff;padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;background:none;border:none;padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.7rem;color:var(--muted);position:relative}
+.tabs button.act{color:var(--ink)}
+.tabs button.act::before{content:"";position:absolute;top:0;left:22%;right:22%;height:2px;background:var(--ink);border-radius:2px}
+@media (min-width:1000px){.tabs{display:none}}
+
+/* ---------- sheet ---------- */
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity var(--t-med);z-index:20}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:16px 16px 0 0;z-index:21;transform:translateY(105%);transition:transform var(--t-med) var(--ease);max-height:78%;display:flex;flex-direction:column}
+.sheet.on{transform:none}
+.sheet .grab{width:40px;height:4px;border-radius:4px;background:#ccc;margin:8px auto 4px}
+.sheet h3{font-size:1rem;font-weight:600;padding:6px 16px 8px}
+.sheet .opts{overflow:auto;padding:0 8px 16px}
+.sheet .grp{font-size:.78rem;font-weight:600;color:var(--faint);padding:10px 10px 4px}
+.sheet .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:none;padding:11px 10px;border-radius:8px;font-size:.95rem}
+.sheet .opt:hover{background:#f3f3f3}
+.sheet .opt .i{color:var(--muted)}
+
+.toast{position:absolute;left:50%;bottom:130px;transform:translate(-50%,20px);background:#1d2226;color:#fff;padding:9px 16px;border-radius:8px;font-size:.88rem;opacity:0;transition:all var(--t-med) var(--ease);z-index:30;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+.pitch{margin:14px 16px 4px}
+.pitch h2{font-size:1.45rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.pitch h2 span{white-space:nowrap;background:linear-gradient(100deg,#0a66c2,#378fe9 60%,#70b5f9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pitch p{color:var(--muted);font-size:.95rem;margin-top:6px;line-height:1.5}
+/* banner art */
+.cover,.pcard .cover,.lb-cover{background:#0a66c2 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='140' viewBox='0 0 600 140'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%230a4f9e'/%3E%3Cstop offset='.55' stop-color='%230a66c2'/%3E%3Cstop offset='1' stop-color='%2360a8f0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='600' height='140' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.22' stroke-width='1'%3E%3Cpath d='M40 100L120 60L210 90L300 40L390 80L470 30L560 70'/%3E%3Cpath d='M120 60L160 20M300 40L260 110M390 80L430 120M470 30L520 100'/%3E%3C/g%3E%3Cg fill='%23ffffff' fill-opacity='.55'%3E%3Ccircle cx='40' cy='100' r='3'/%3E%3Ccircle cx='120' cy='60' r='4'/%3E%3Ccircle cx='210' cy='90' r='3'/%3E%3Ccircle cx='300' cy='40' r='5'/%3E%3Ccircle cx='390' cy='80' r='3'/%3E%3Ccircle cx='470' cy='30' r='4'/%3E%3Ccircle cx='560' cy='70' r='3'/%3E%3Ccircle cx='160' cy='20' r='2'/%3E%3Ccircle cx='260' cy='110' r='2'/%3E%3Ccircle cx='430' cy='120' r='2'/%3E%3Ccircle cx='520' cy='100' r='2'/%3E%3C/g%3E%3C/svg%3E") center/cover no-repeat!important}
+.intro .cover::after{display:none}
+/* logos */
+.logo img{width:100%;height:100%;object-fit:contain;border-radius:inherit;background:#fff}
+.logo.img{background:#fff!important;border:1px solid var(--line);padding:2px}
+.src .lg img{width:100%;height:100%;object-fit:contain;border-radius:3px;background:#fff}
+.src .lg.img{background:#fff!important}
+/* avatar tap */
+.intro .av,.pcard .av{cursor:zoom-in}
+/* links in lists */
+.li a.t{color:var(--ink);text-decoration:none;font-weight:600}
+.li a.t:hover{color:var(--blue);text-decoration:underline}
+.li .web{display:inline-flex;align-items:center;gap:4px;font-size:.82rem;color:var(--blue);font-weight:600;text-decoration:none;margin-top:3px}
+/* award gallery */
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px 14px}
+.aw{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;cursor:zoom-in;text-align:left;padding:0}
+.aw img{display:block;width:100%;height:150px;object-fit:cover}
+.aw div{padding:8px 10px}
+.aw b{display:block;font-size:.88rem;font-weight:600}
+.aw small{color:var(--muted);font-size:.78rem}
+/* viz */
+.viz{padding:6px 12px 12px}
+.viz .cap{font-size:.78rem;font-weight:600;color:var(--muted);padding:8px 2px 4px;text-transform:none}
+.viz svg{width:100%;height:auto;display:block;overflow:visible}
+.viz .n{animation:vpop .45s var(--ease) both}
+.viz .ln{stroke-dasharray:400;stroke-dashoffset:400;animation:vdraw .7s var(--ease) forwards}
+@keyframes vpop{from{opacity:0;transform:translateY(6px)}}
+@keyframes vdraw{to{stroke-dashoffset:0}}
+/* cv buttons */
+.file .btns2{margin-left:auto;display:flex;gap:6px}
+.file .btns2 .pill{padding:5px 12px;font-size:.88rem}
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px}
+.lb.on{display:flex;animation:fade var(--t-med) var(--ease) both}
+.lb-card{width:min(440px,100%);background:#fff;border-radius:14px;overflow:hidden;animation:rise var(--t-med) var(--ease) both;max-height:92vh;overflow-y:auto}
+.lb-cover{height:96px}
+.lb-av{width:min(62vw,220px);aspect-ratio:1;margin:-70px auto 0;border-radius:50%;border:5px solid #fff;overflow:hidden;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.lb-av img{width:100%;height:100%;object-fit:cover}
+.lb-body{padding:12px 20px 20px;text-align:center}
+.lb-body h3{font-size:1.3rem;font-weight:600}
+.lb-body .hl{font-size:.92rem;margin-top:4px}
+.lb-body .loc{font-size:.84rem;color:var(--faint);margin-top:6px}
+.lb-body .acts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
+.lb-img{max-width:min(94vw,720px);max-height:82vh;border-radius:10px;display:block}
+.lb-cap{color:#fff;text-align:center;margin-top:10px;font-weight:600}
+.lb-x{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;display:grid;place-items:center}
+.lb-x:hover{background:rgba(255,255,255,.28)}
+.lb-wrap{display:flex;flex-direction:column;align-items:center}
+/* persona chip variant */
+.sugs button.p{background:var(--blue);color:#fff}
+.sugs button.p:hover{background:var(--blue-d)}
+.pitch h2 span{white-space:nowrap}
+.bar .lang{font-weight:700;font-size:.95rem;color:var(--blue);width:36px;height:36px}
+.askf{flex:1;min-width:0;display:flex;align-items:center;gap:2px;background:var(--bubble);border-radius:10px;padding:0 4px 0 12px;border:1px solid transparent;transition:border-color var(--t-fast)}
+.askf:focus-within{border-color:var(--blue);background:#fff}
+.askf input{flex:1;min-width:0;border:none;background:none;padding:10px 0;font:inherit;font-size:.95rem;color:var(--ink);outline:none}
+.askf .ib{width:34px;height:34px;padding:0}
+.askf .send{color:var(--blue)}
+.askf .send:disabled{color:var(--faint)}
+#mic.on{background:#cc1016;color:#fff;animation:micp 1.2s ease-in-out infinite}
+@keyframes micp{50%{box-shadow:0 0 0 6px rgba(204,16,22,.18)}}
+.aitag{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:600;color:var(--blue);background:var(--blue-t);border-radius:999px;padding:2px 8px;align-self:flex-start}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail" aria-label="Profile summary">
+    <div class="pcard">
+      <div class="cover"></div>
+      <div class="av on" data-av data-zoom role="button" tabindex="0" aria-label="View profile photo"></div>
+      <div class="body">
+        <h2>Purusottam Singh</h2>
+        <div class="hl" data-hl></div>
+        <div class="loc">Mumbai, Maharashtra, India</div>
+        <hr>
+        <div class="row"><span>Focus</span><b>Agentic AI · BFSI</b></div>
+        <div class="row"><span>Region</span><b>India-West · Europe</b></div>
+        <div class="row"><span>POCs a year at Gupshup</span><b>~100+</b></div>
+        <div class="btns">
+          <a class="pill solid" href="Purusottam_Singh_Resume.pdf" target="_blank" rel="noopener">View CV</a>
+          <a class="pill" data-tel href="#"><span data-i="phone" class="s"></span>Call</a>
+          <a class="pill" href="mailto:purusottam.singh243@gmail.com">Email</a>
+          <a class="pill grey" href="https://www.linkedin.com/in/puru-singh/" target="_blank" rel="noopener">View LinkedIn profile</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="app" id="app">
+    <div class="bar">
+      <div class="av on" data-av data-zoom role="button" tabindex="0" aria-label="View profile photo"></div>
+      <div class="who"><b>Purusottam Singh</b><small><span class="st">● Active now</span> · <span data-hl></span></small></div>
+      <a class="ib lang" href="hi.html" aria-label="हिन्दी में देखें">हिं</a>
+      <a class="ib" data-tel href="#" aria-label="Call" data-i="phone"></a>
+      <button class="ib" id="dl" aria-label="Download CV" data-i="download"></button>
+      <button class="ib" id="menu" aria-label="All topics" data-i="dots"></button>
+    </div>
+
+    <main class="thread" id="thread" aria-live="polite">
+      <section class="intro">
+        <div class="cover"></div>
+        <div class="top">
+          <div class="av on" data-av data-zoom role="button" tabindex="0" aria-label="View profile photo"></div>
+          <h1>Purusottam Singh</h1>
+          <div class="hl" data-hl></div>
+          <div class="loc">Mumbai, Maharashtra, India · <b>Kore.ai</b> · <b>Gupshup</b> · <b>Active.ai</b></div>
+          <div class="acts">
+            <a class="pill solid" href="Purusottam_Singh_Resume.pdf" target="_blank" rel="noopener"><span data-i="doc" class="s"></span>View CV</a>
+            <a class="pill" data-tel href="#"><span data-i="phone" class="s"></span>Call</a>
+            <a class="pill" href="mailto:purusottam.singh243@gmail.com">Email</a>
+            <a class="pill grey" href="https://www.linkedin.com/in/puru-singh/" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+        <div class="hello" id="hello"></div>
+        <div class="pitch"><h2>Don't read my résumé. <span>Ask it.</span></h2><p>I sell agentic AI for a living, so my résumé runs like one. Pick a question and watch it plan, pull evidence from my career, check it, and answer with sources.</p></div>
+      </section>
+      <div class="day">TODAY</div>
+      <div id="msgs"></div>
+    </main>
+
+    <div class="composer">
+      <div class="sugs" id="sugs" aria-label="Suggested questions"></div>
+      <div class="inbar">
+        <button class="ib" id="menu2" aria-label="All topics" data-i="grid"></button>
+        <form class="askf" id="askf" autocomplete="off"><input id="qin" maxlength="300" placeholder="Ask anything about Puru…" aria-label="Ask your own question"><button type="button" class="ib" id="mic" aria-label="Ask by voice" data-i="mic"></button><button type="submit" class="ib send" id="send" aria-label="Send" data-i="send"></button></form>
+        <button class="ib" id="snd" aria-label="Voice on" aria-pressed="true"></button>
+      </div>
+    </div>
+
+    <nav class="tabs" aria-label="Sections">
+      <button class="act" data-tab="chat"><span data-i="chat"></span>Chat</button>
+      <button data-tab="exp"><span data-i="brief"></span>Experience</button>
+      <button data-tab="skills"><span data-i="spark"></span>Skills</button>
+      <button data-tab="awards"><span data-i="trophy"></span>Awards</button>
+      <button data-tab="cv"><span data-i="doc"></span>CV</button>
+    </nav>
+
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="All topics"><div class="grab"></div><h3>What would you like to know?</h3><div class="opts" id="opts"></div></div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+<div class="lb" id="lb" role="dialog" aria-modal="true"><button class="lb-x" id="lbx" aria-label="Close" data-i="x"></button><div id="lbin"></div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+let reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const HEADLINE='Solutions Engineering @ Kore.ai | Conversational AI | AI Agents | Ex-Gupshup | Ex-Active.ai | BFSI';
+const LINKEDIN='https://www.linkedin.com/in/puru-singh/', EMAIL='purusottam.singh243@gmail.com';
+const TEL=['+91','9172','819763'].join(''),TEL_SHOW='+91 91728 19763';
+
+/* ================= icons ================= */
+const P={download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',dots:'<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
+ grid:'<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',
+ chat:'<path d="M4 5h16v11H9l-5 4z"/>',brief:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18"/>',
+ spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',badge:'<circle cx="12" cy="9" r="5"/><path d="M9 13.5L8 21l4-2 4 2-1-7.5"/>',doc:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+ sound:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/>',mute:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l4 6M21 9l-4 6"/>',
+ speak:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 010 6"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>',
+ trophy:'<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8M10 17h4"/>',cap:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+ mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/>',
+ map:'<path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',code:'<path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 6l-2 12"/>',
+ bank:'<path d="M3 10l9-5 9 5M5 10v8M10 10v8M14 10v8M19 10v8M3 20h18"/>',layers:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',team:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0114 0M16 4a3.5 3.5 0 010 7M18 14a6 6 0 014 6"/>',
+ check:'<path d="M5 12l4 4 10-10"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',send:'<path d="M4 12l16-8-6 16-3-7z"/>',phone:'<path d="M5 4h3l2 5-2.5 1.5a11 11 0 005 5L14 13l5 2v3a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2"/>',
+ x:'<path d="M6 6l12 12M18 6L6 18"/>',ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/>',
+ target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
+ file:'<path d="M7 3h7l5 5v13H7z"/><path d="M9 13l2 2 4-4"/>',handshake:'<path d="M3 12l4-4 4 3 4-3 6 5-4 4-3-2-3 2-4-3z"/>',
+ cpu:'<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/>',plug:'<path d="M9 3v5M15 3v5M7 8h10v3a5 5 0 01-10 0zM12 16v5"/>',
+ wave:'<path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"/>',flow:'<circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h3M14 12h3"/>'};
+const ic=(n,c='i')=>`<svg class="${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]||''}</svg>`;
+document.querySelectorAll('[data-i]').forEach(el=>{el.insertAdjacentHTML('afterbegin',ic(el.dataset.i,el.classList.contains('s')?'i s':'i'))});
+document.querySelectorAll('[data-hl]').forEach(el=>el.textContent=HEADLINE);
+document.querySelectorAll('[data-tel]').forEach(a=>{a.href='tel:'+TEL});
+const AVHTML='<img src="photo.jpg" alt="Purusottam Singh" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{textContent:\'PS\'}))">';
+document.querySelectorAll('[data-av]').forEach(el=>el.innerHTML=AVHTML);
+
+/* ================= data (from the CV) ================= */
+const LOGO={kore:['img/logo-kore.png'],gs:['img/logo-gupshup.png'],act:['img/logo-activeai.png'],cdac:['img/logo-cdac.png'],smvit:['img/logo-smvit.png'],meta:['img/logo-meta.png'],tm:['T','#c4161c'],idm:['ID','#1e5aa8']};
+const EXP=[
+ {co:'Kore.ai',k:'kore',dur:'Mar 2026 – Present',loc:'Mumbai, India',roles:[{id:'kore',t:'Sr. Manager, Sales Engineering',d:'Mar 2026 – Present',pts:['Lead <b>India-West BFSI pre-sales</b> end to end and co-own the <b>Europe region</b> for the Agent Platform (Work, Service and Process).','Trusted technical advisor to CXO, architect and procurement stakeholders, designing for scale and integration.','Run discovery workshops and build <b>model-agnostic, LLM-powered POCs</b> for agentic use cases.']}]},
+ {co:'Gupshup Technology India Pvt. Ltd.',k:'gs',dur:'Jun 2022 – Mar 2026',loc:'Mumbai and Bengaluru, India',roles:[
+   {id:'gs',t:'Manager, Pre-Sales & Solutions',d:'Jan 2023 – Mar 2026 · Mumbai',pts:['Co-owned <b>India-West pre-sales</b> with a strong BFSI focus.','Designed and delivered <b>~100+ LLM-powered POCs a year</b> alongside executive demos.','Owned RFP and RFI responses; led enablement with Customer Success.','Influenced <b>product roadmap and GTM alignment</b> through field feedback.']},
+   {id:'sse',t:'Software Solutions Engineer II',d:'Jun 2022 – Dec 2022 · Bengaluru',pts:['Acted as <b>project manager for BFSI chatbot projects</b>, leading a team while building hands-on.','Owned pre-sales for the Active.ai BFSI wing.']}]},
+ {co:'Active.ai, a Gupshup company',k:'act',dur:'Mar 2021 – Jun 2022',loc:'Bengaluru, India',roles:[{id:'act',t:'Software Developer & Pre-Sales Consultant',d:'Mar 2021 – Jun 2022',pts:['Built <b>production-grade chatbots for BFSI clients</b> on Morfeus and Trinity using Java, Spring Boot and microservices.','Primary pre-sales consultant for demos, POCs and technical discussions.']}]},
+ {co:'ID Medical (NHS agency staffing, UK)',k:'idm',dur:'Oct 2019 – Feb 2020',loc:'Pune, India',roles:[{id:'idm',t:'Trainee Recruitment Consultant',d:'Oct 2019 – Feb 2020',pts:['Sold and negotiated NHS agency shifts to a portfolio of UK nurses.']}]},
+ {co:'Tech Mahindra (Three UK)',k:'tm',dur:'Aug 2018 – Oct 2019',loc:'Pune, India',roles:[{id:'tm',t:'Customer Relations Advisor, Retention',d:'Aug 2018 – Oct 2019',pts:['Drove retention through de-escalation and value-led persuasion, with cross-sell and up-sell.']}]}
+];
+const SKILLS=[['Pre-sales',['Solution consulting','Discovery and use-case scoping','Executive demos','POCs','RFP and RFI']],
+ ['Agentic and conversational AI',['LLMs','AI agents','Multi-agent orchestration','RAG','NLP and NLU','Voice AI and SIP telephony','Multilingual bots']],
+ ['Platforms',['Kore.ai Agent Platform','Gupshup Conversation Cloud','Gupshup CPaaS','Active.ai Morfeus','Active.ai Trinity']],
+ ['Engineering',['BFSI chatbot delivery','Java','Spring Boot','Node.js','Microservices','REST and SOAP APIs']]];
+const CERTS=[['Kore.ai Agent Platform: Agentic Apps','Kore.ai Academy','kore'],['Kore.ai Agent Platform: AI Engineering Tools','Kore.ai Academy','kore'],['Kore.ai Automation AI','Kore.ai Academy','kore'],['Meta Certified Business Messaging Strategy','Meta','meta']];
+const EDU=[['Post Graduate Diploma, Advanced Computing','Centre for Development of Advanced Computing (C-DAC), Bengaluru · 2021','cdac','https://www.cdac.in/index.aspx?id=bangalore'],
+ ['Bachelor of Engineering','Sir M. Visvesvaraya Institute of Technology, Bengaluru · 2018','smvit','https://www.sirmvit.edu/']];
+const AWARDS=[['Shining Star Award','Kore.ai','img/award-kore.jpg'],['Customer Centricity Award','Gupshup','img/award-gupshup.jpg']];
+const SRCNAME={kore:'Kore.ai',gs:'Gupshup · Manager',sse:'Gupshup · SSE II',act:'Active.ai',idm:'ID Medical',tm:'Tech Mahindra',certs:'Certifications',awards:'Awards',edu:'Education'};
+const SRCLOGO={kore:'kore',gs:'gs',sse:'gs',act:'act',idm:'idm',tm:'tm',certs:'kore',awards:'kore',edu:'cdac'};
+
+/* ================= visuals (SVG, drawn from the answer) ================= */
+const C={b:'#0a66c2',bt:'#e8f0fb',ln:'#c8d3df',tx:'#1d2226',mu:'#666',g:'#057642',gt:'#e6f4ea',au:'#915907',aut:'#fcf1dc'};
+const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" font-size="${o.s||11}" font-weight="${o.w||500}" fill="${o.c||C.tx}" text-anchor="${o.a||'middle'}" font-family="inherit">${t}</text>`;
+const lines=(x,y,txt,o={})=>{const w=txt.split(' ');const L=[];let cur='';const max=o.max||12;w.forEach(q=>{if((cur+' '+q).trim().length>max){L.push(cur.trim());cur=q}else cur+=' '+q});L.push(cur.trim());return L.map((l,i)=>T(x,y+i*(o.lh||12),l,o)).join('')};
+const d=i=>`style="animation-delay:${i*90}ms"`;
+const VIZ={
+ flow(steps,hi=-1){const n=steps.length,W=320,gap=W/(n);let s=`<path class="ln" d="M${gap/2} 30 H${W-gap/2}" stroke="${C.ln}" stroke-width="2" fill="none"/>`;
+  steps.forEach((t,i)=>{const x=gap/2+i*gap,on=i===hi||hi===-2;s+=`<g class="n" ${d(i)}><circle cx="${x}" cy="30" r="13" fill="${on?C.b:'#fff'}" stroke="${C.b}" stroke-width="2"/>${T(x,34,i+1,{c:on?'#fff':C.b,w:700})}${lines(x,60,t,{s:10.5,max:11})}</g>`});return[`0 0 ${W} 90`,s]},
+ hub(center,spokes){const W=320,H=150,cx=160,cy=75;let s='';spokes.forEach((t,i)=>{const a=-Math.PI/2+i*2*Math.PI/spokes.length,x=cx+Math.cos(a)*115,y=cy+Math.sin(a)*52;
+   s+=`<path class="ln" d="M${cx} ${cy}L${x} ${y}" stroke="${C.ln}" stroke-width="1.5"/><g class="n" ${d(i+1)}><rect x="${x-44}" y="${y-13}" width="88" height="26" rx="13" fill="#fff" stroke="${C.ln}"/>${T(x,y+4,t,{s:10.5})}</g>`});
+   s+=`<g class="n"><circle cx="${cx}" cy="${cy}" r="24" fill="${C.b}"/>${T(cx,cy+4,center,{c:'#fff',w:700,s:10.5})}</g>`;return[`0 0 ${W} ${H}`,s]},
+ funnel(levels){const W=320;let s='';levels.forEach((t,i)=>{const w=280-i*50,x=(W-w)/2,y=6+i*30;s+=`<g class="n" ${d(i)}><rect x="${x}" y="${y}" width="${w}" height="24" rx="6" fill="${i===levels.length-1?C.b:C.bt}"/>${T(W/2,y+16,t,{c:i===levels.length-1?'#fff':C.b,w:600})}</g>`});return[`0 0 ${W} ${10+levels.length*30}`,s]},
+ stack(layers){const W=320;let s='';layers.forEach((t,i)=>{const y=6+i*26,top=i===0;s+=`<g class="n" ${d(layers.length-i)}><rect x="40" y="${y}" width="240" height="22" rx="5" fill="${top?C.b:'#fff'}" stroke="${top?C.b:C.ln}"/>${T(160,y+15,t,{c:top?'#fff':C.tx,w:600})}</g>`});return[`0 0 ${W} ${10+layers.length*26}`,s]},
+ ladder(steps){const W=320,n=steps.length,bw=(W-20)/n;let s='';steps.forEach((t,i)=>{const h=22+i*16,x=10+i*bw,y=100-h,last=i===n-1;s+=`<g class="n" ${d(i)}><rect x="${x+3}" y="${y}" width="${bw-6}" height="${h}" rx="5" fill="${last?C.b:C.bt}"/>${lines(x+bw/2,y-18,t,{s:10,max:12,c:last?C.b:C.tx,w:600})}</g>`});return[`0 -10 ${W} 115`,s]},
+ checklist(items,title){const W=320;let s=`<g class="n"><rect x="20" y="4" width="96" height="120" rx="8" fill="#fff" stroke="${C.ln}"/><rect x="34" y="18" width="68" height="8" rx="4" fill="${C.bt}"/><rect x="34" y="34" width="52" height="6" rx="3" fill="#eee"/><rect x="34" y="46" width="60" height="6" rx="3" fill="#eee"/><rect x="34" y="58" width="44" height="6" rx="3" fill="#eee"/>${T(68,108,title,{s:10,c:C.mu})}</g>`;
+  items.forEach((t,i)=>{const y=14+i*28;s+=`<g class="n" ${d(i+1)}><circle cx="148" cy="${y+8}" r="9" fill="${C.gt}"/><path d="M143.5 ${y+8}l3 3 5.5-6" stroke="${C.g}" stroke-width="2" fill="none" stroke-linecap="round"/>${T(166,y+12,t,{a:'start',s:11.5})}</g>`});return[`0 0 ${W} 130`,s]},
+ regions(){const W=320;const pin=(x,y,c)=>`<path d="M${x} ${y}c-8 0-13 6-13 12 0 9 13 20 13 20s13-11 13-20c0-6-5-12-13-12z" fill="${c}"/><circle cx="${x}" cy="${y+12}" r="4" fill="#fff"/>`;
+  let s=`<g class="n"><rect x="6" y="8" width="148" height="96" rx="10" fill="${C.bt}"/>${pin(40,22,C.b)}${T(96,40,'India-West',{w:700,c:C.b,s:13})}${T(96,58,'BFSI · Lead',{s:11})}${T(80,86,'Gupshup → Kore.ai',{s:10,c:C.mu})}</g>
+  <g class="n" ${d(2)}><rect x="166" y="8" width="148" height="96" rx="10" fill="#fff" stroke="${C.ln}"/>${pin(200,22,'#70b5f9')}${T(256,40,'Europe',{w:700,c:C.b,s:13})}${T(256,58,'Co-owner',{s:11})}${T(240,86,'Kore.ai',{s:10,c:C.mu})}</g>`;return[`0 0 ${W} 110`,s]},
+ stats(items){const W=320,n=items.length,w=(W-(n-1)*8)/n;let s='';items.forEach(([big,small],i)=>{const x=i*(w+8);s+=`<g class="n" ${d(i)}><rect x="${x}" y="4" width="${w}" height="74" rx="10" fill="${i===0?C.b:C.bt}"/>${T(x+w/2,38,big,{s:20,w:700,c:i===0?'#fff':C.b})}${lines(x+w/2,56,small,{s:10,max:14,c:i===0?'#fff':C.tx})}</g>`});return[`0 0 ${W} 84`,s]},
+ converge(inputs,target){const W=320,n=inputs.length;let s='';inputs.forEach((t,i)=>{const y=12+i*(110/(n-1||1));s+=`<path class="ln" d="M96 ${y}C150 ${y} 170 60 214 60" stroke="${C.ln}" stroke-width="1.5" fill="none"/><g class="n" ${d(i)}><rect x="8" y="${y-11}" width="88" height="22" rx="11" fill="#fff" stroke="${C.ln}"/>${T(52,y+4,t,{s:10.5})}</g>`});
+  s+=`<g class="n" ${d(n)}><rect x="214" y="36" width="98" height="48" rx="10" fill="${C.b}"/>${lines(263,56,target,{c:'#fff',w:700,s:11,max:12})}</g>`;return[`0 0 ${W} 124`,s]},
+ team(){return VIZ.hub('Puru',['Sales','Customer Success','Product','Customer'])}
+};
+function vizCard(v){if(!v)return'';const[box,inner]=VIZ[v[0]](...v.slice(2));return`<div class="card"><div class="viz"><div class="cap">${v[1]}</div><svg viewBox="${box}" role="img" aria-label="${v[1]}">${inner}</svg></div></div>`}
+
+/* ================= intents ================= */
+const I={
+ /* sales-leader lens */
+ fit:{g:'s',q:'Is he a fit for agentic AI pre-sales?',steps:['Looked up current role and scope','Found hands-on POC work','Checked platform certifications'],src:['kore','gs','certs'],
+  a:['Yes. He leads <b>India-West BFSI pre-sales</b> for Kore.ai\'s Agent Platform and co-owns the Europe region, building <b>model-agnostic, LLM-powered POCs</b> himself.','Before that he delivered <b>~100+ LLM-powered POCs a year</b> at Gupshup, and he holds Kore.ai Agent Platform training in Agentic Apps and AI Engineering Tools.'],
+  viz:['stats','At a glance',[['100+','POCs a year at Gupshup'],['2','regions today'],['2','company awards']]],next:['deals','bfsi','agentic']},
+ deals:{g:'s',q:'How does he help close deals?',steps:['Mapped his deal motion','Found POC and demo volume'],src:['kore','gs'],
+  a:['He runs the technical side of the deal end to end: discovery, solution design, POCs, executive demos and the commercial proposal.','At Gupshup that meant <b>~100+ LLM-powered POCs a year</b> alongside custom executive demos, advancing deal progression and technical win rates.'],
+  viz:['flow','His deal motion',['Discovery','Solution design','POC','Executive demo','Proposal'],-2],next:['cxo','rfp','discovery']},
+ cxo:{g:'s',q:'Can he hold his own with CXOs?',steps:['Found stakeholder scope at Kore.ai','Found positioning work at Gupshup'],src:['kore','gs'],
+  a:['Yes. At Kore.ai he\'s the trusted technical advisor to <b>CXO, architect and procurement</b> stakeholders. At Gupshup he positioned conversational AI to CXO, engineering and operations teams.','He translates AI capability into outcomes buyers care about, such as customer acquisition, automation and compliance.'],
+  viz:['hub','Who he advises','Puru',['CXO','Architect','Procurement','Engineering','Operations']],next:['discovery','deals','selling']},
+ discovery:{g:'s',q:'How does he run discovery?',steps:['Found discovery and scoping work'],src:['kore','gs'],
+  a:['He runs <b>use-case discovery workshops</b>, scopes the highest-value use cases, and assesses each one for feasibility and business value before designing the solution and the POC.'],
+  viz:['funnel','From workshop to solution',['Discovery workshops','Use-case scoping','Feasibility and value','Solution design']],next:['deals','agentic','rfp']},
+ rfp:{g:'s',q:'Does he own RFPs?',steps:['Found RFP ownership','Checked current commercial scope'],src:['gs','kore'],
+  a:['Yes. He owned <b>RFP and RFI responses and commercial positioning</b> at Gupshup, and at Kore.ai he takes deals from qualification through commercial proposals.','He also handles the functional, security and integration questions that come up during evaluations.'],
+  viz:['checklist','What his responses cover',['Requirements fit','Solution architecture','Security and integration','Commercial positioning'],'RFP'],next:['deals','team','integ']},
+ team:{g:'s',q:'How does he work with sales and CS?',steps:['Found enablement and feedback work'],src:['gs'],
+  a:['He\'s the technical partner to sales on every deal. At Gupshup he ran <b>enablement workshops with Customer Success</b> on cross-sell and up-sell, and fed structured field feedback into the <b>product roadmap and GTM</b>.'],
+  viz:['team','Who he works with'],next:['lead','selling','deals']},
+ selling:{g:'s',q:'Does he have real sales instinct?',steps:['Looked at his earliest roles','Traced the path into pre-sales'],src:['tm','idm','act'],
+  a:['He started in customer-facing roles: <b>retention at Tech Mahindra</b> for Three UK (objection handling, de-escalation, cross-sell and up-sell), then <b>negotiating rates and terms</b> for NHS agency shifts at ID Medical.','He then moved into engineering and pre-sales, so he sells with both commercial instinct and technical depth.'],
+  viz:['ladder','His path',['Retention','Negotiation','Developer + pre-sales','Regional pre-sales']],next:['cxo','lead','fit']},
+ bfsi:{g:'s',q:'What has he done in banking and BFSI?',steps:['Searched every role for BFSI work','Ordered it by time'],src:['act','sse','gs','kore'],
+  a:['BFSI runs through his whole career: he built production chatbots for BFSI clients at Active.ai, project-managed BFSI chatbot builds at Gupshup while still coding, co-owned India-West pre-sales with a strong BFSI focus, and now leads <b>India-West BFSI pre-sales</b> at Kore.ai.'],
+  viz:['flow','BFSI across his career',['Built BFSI bots','Led BFSI builds','Co-owned India-West','Leads BFSI pre-sales'],3],next:['region','integ','deals']},
+ region:{g:'s',q:'Which regions has he covered?',steps:['Found regional ownership','Checked current scope'],src:['gs','kore'],
+  a:['India-West is his home market. He co-owned India-West pre-sales at Gupshup and now leads <b>India-West BFSI pre-sales</b> at Kore.ai, where he also co-owns the <b>Europe region</b>.'],
+  viz:['regions','Regional scope'],next:['lead','bfsi','contact']},
+ lead:{g:'s',q:'Has he led teams or regions?',steps:['Found leadership scope','Checked recognition'],src:['sse','gs','kore','awards'],
+  a:['Yes. He led a BFSI development team as acting project manager, co-owned India-West pre-sales as a manager, and now leads India-West BFSI pre-sales while co-owning Europe.','He\'s been recognised with the <b>Customer Centricity Award</b> at Gupshup and the <b>Shining Star Award</b> at Kore.ai.'],
+  viz:['ladder','How his scope grew',['Developer','Project manager','Manager, pre-sales','Sr. Manager, regional lead']],next:['awards','team','contact']},
+ /* technical-leader lens */
+ eng:{g:'t',q:'How deep is his engineering?',steps:['Found engineering roles','Checked stack and education'],src:['act','sse','edu'],
+  a:['He wrote production code for BFSI chatbots at Active.ai in <b>Java, Spring Boot, microservices, JPA and REST</b>, and contributed to backend architecture, API design and integration layers in regulated BFSI environments.','He also holds a PG Diploma in Advanced Computing from C-DAC.'],
+  viz:['stack','The stack he built on',['BFSI chatbots','Spring Boot · JPA','Microservices','REST APIs','Java']],next:['agentic','integ','build']},
+ agentic:{g:'t',q:'How does he design agentic solutions?',steps:['Found agent platform work','Checked architecture scope'],src:['kore','certs'],
+  a:['On Kore.ai\'s Agent Platform he designs across <b>AI agents, multi-agent orchestration, RAG and LLMs</b>, and builds model-agnostic POCs to prove a use case before it scales.','He recommends architecture patterns for performance, scalability and integration with the client\'s engineering team.'],
+  viz:['converge','Agentic building blocks',['AI agents','RAG','LLMs','Channels'],'Orchestrated solution'],next:['model','integ','voice']},
+ integ:{g:'t',q:'Can he handle enterprise integrations?',steps:['Found integration and API work','Checked evaluation experience'],src:['act','gs','kore'],
+  a:['Yes. He built <b>integration layers and APIs</b> in regulated BFSI environments, works with REST and SOAP, and answers the functional, security and integration questions that come up in pilots and evaluations.','At Kore.ai he recommends integration patterns directly with client engineering teams.'],
+  viz:['converge','Where integration happens',['Backend systems','REST and SOAP','Security reviews'],'AI platform'],next:['eng','agentic','rfp']},
+ voice:{g:'t',q:'Does he know voice and messaging channels?',steps:['Checked channel and platform skills'],src:['gs','kore'],
+  a:['Yes. His channel range covers <b>voice AI and SIP telephony</b> on the agent side, plus WhatsApp, RCS and SMS through <b>Gupshup CPaaS</b>, and multilingual bots.'],
+  viz:['converge','Channels he works across',['Voice · SIP','WhatsApp','RCS','SMS','Web chat'],'One agent'],next:['platforms','agentic','model']},
+ model:{g:'t',q:'Is he locked into one LLM?',steps:['Checked how he builds POCs'],src:['kore'],
+  a:['No. He builds <b>model-agnostic, LLM-powered POCs</b>, so the use case drives the model choice rather than the other way round.'],
+  viz:['converge','Model-agnostic by design',['Model A','Model B','Model C'],'Same use case'],next:['agentic','build','platforms']},
+ build:{g:'t',q:'Can he actually build, or just sell?',steps:['Found engineering roles','Found recent hands-on work'],src:['act','sse','kore'],
+  a:['He builds. He started as a developer shipping BFSI chatbots in <b>Java, Spring Boot and microservices</b>, kept coding while leading a team as project manager, and still builds his own model-agnostic POCs today.'],
+  viz:['flow','Builder the whole way',['Developer','Builder + PM','Builds own POCs'],-2],next:['eng','platforms','agentic']},
+ platforms:{g:'t',q:'Which AI platforms has he worked on?',steps:['Listed platforms per role'],src:['act','gs','kore'],
+  a:['Three generations of conversational AI stacks: Active.ai\'s <b>Morfeus</b> orchestrator and <b>Trinity</b> AI engine, <b>Gupshup Conversation Cloud</b> and CPaaS, and now the <b>Kore.ai Agent Platform</b> for agentic use cases.'],
+  viz:['flow','Platforms over time',['Morfeus + Trinity','Gupshup Cloud + CPaaS','Kore.ai Agent Platform'],2],next:['agentic','voice','skills']},
+ /* profile + next steps */
+ exp:{g:'p',q:'Show me his experience',steps:['Pulled the full work history'],src:[],a:['Here\'s his experience, most recent first.'],card:'exp',next:['deals','eng','cv']},
+ skills:{g:'p',q:'What are his skills?',steps:['Grouped skills by area'],src:[],a:['Here are his skills, grouped by area.'],card:'skills',next:['agentic','deals','creds']},
+ awards:{g:'p',q:'Show me his awards',steps:['Collected award photos'],src:[],a:['Here are his awards. Tap a photo to see it full size.'],card:'awards',next:['lead','creds','contact']},
+ creds:{g:'p',q:'Certifications and education?',steps:['Collected certifications and education'],src:[],a:['Here are his certifications and education.'],card:'creds',next:['awards','eng','cv']},
+ cv:{g:'n',q:'Can I see his CV?',steps:['Attached the latest CV'],src:[],a:['Sure. You can open it in a new tab to read first, or download it.'],card:'cv',next:['contact','exp','fit']},
+ contact:{g:'n',q:'How do I get in touch?',steps:['Fetched contact options'],src:[],a:['He\'s open to conversations about agentic AI, BFSI and pre-sales. You can call him directly or drop an email.'],card:'contact',next:['cv','fit','deals']}
+};
+const ALL=Object.keys(I);
+
+/* ================= personalisation ================= */
+const PROFILES={paytm:['Paytm Pi team',['fit','bfsi','deals']],bank:['banking team',['bfsi','fit','integ']],bfsi:['BFSI team',['bfsi','fit','integ']],fintech:['fintech team',['bfsi','fit','agentic']],ai:['AI product team',['agentic','build','model']],recruiter:['recruiting team',['fit','lead','exp']],sales:['sales team',['deals','cxo','rfp']],tech:['engineering team',['eng','agentic','integ']]};
+const PRO=(()=>{const p=new URLSearchParams(location.search);const raw=(p.get('for')||'').trim().slice(0,40);const k=raw.toLowerCase().replace(/[^a-z]/g,'');
+  const hit=PROFILES[k];return{who:hit?hit[0]:(raw?raw.replace(/[-_]+/g,' ')+' team':''),first:hit?hit[1]:null}})();
+if(PRO.who){$('#hello').textContent=`Hi ${PRO.who}, this chat was set up for you.`;$('#hello').classList.add('on');document.title=`Chat with Purusottam Singh · for the ${PRO.who}`}
+
+/* ================= analytics hook ================= */
+const GOATCOUNTER_CODE='';
+if(GOATCOUNTER_CODE){const sc=document.createElement('script');sc.async=true;sc.src='https://gc.zgo.at/count.js';sc.dataset.goatcounter=`https://${GOATCOUNTER_CODE}.goatcounter.com/count`;document.head.appendChild(sc)}
+const track=n=>{try{window.goatcounter?.count?.({path:n,title:n,event:true})}catch(e){}};
+document.querySelectorAll('[data-tel]').forEach(a=>a.addEventListener('click',()=>track('call')));
+
+/* ================= sound ================= */
+const LANG=document.documentElement.lang.startsWith('hi')?'hi':'en';
+const VOICE=(()=>{const ok='speechSynthesis' in window;let on=true,q=[],running=false,v=null,gen=0;const btn=$('#snd');
+ function pick(){if(!ok)return;const vs=speechSynthesis.getVoices();const want=LANG==='hi'?/^hi/i:/^en/i;const cand=vs.filter(x=>want.test(x.lang));
+  const rank=x=>(/natural|neural|online|wavenet|premium|enhanced/i.test(x.name)?0:/google/i.test(x.name)?1:(LANG==='en'&&/en-IN/i.test(x.lang))?2:(LANG==='en'&&/en-GB/i.test(x.lang))?3:4);
+  cand.sort((a,b)=>rank(a)-rank(b));v=cand[0]||null}
+ if(ok){pick();speechSynthesis.addEventListener?.('voiceschanged',pick)}
+ const clean=t=>t.replace(/<[^>]+>/g,' ').replace(/~(\d+)\+/g,LANG==='hi'?'$1 से ज़्यादा':'over $1').replace(/(\d+)\+/g,LANG==='hi'?'$1 से ज़्यादा':'$1 plus').replace(/[•⋯]/g,' ').replace(/\s*·\s*/g,', ').replace(/\s+/g,' ').trim();
+ const split=t=>clean(t).split(/(?<=[।.?!])\s+/).map(x=>x.trim()).filter(Boolean);
+ async function run(my){running=true;
+  while(q.length&&my===gen&&on){const it=q.shift();
+   await new Promise(res=>{const u=new SpeechSynthesisUtterance(it.t);if(v){u.voice=v;u.lang=v.lang}else u.lang=LANG==='hi'?'hi-IN':'en-IN';
+    u.rate=LANG==='hi'?0.9:0.96;u.pitch=1;u.volume=1;u.onend=u.onerror=()=>res();speechSynthesis.speak(u)});
+   if(my===gen)await new Promise(r=>setTimeout(r,it.gap))}
+  if(my===gen)running=false}
+ function queue(text,gapAfter=550){if(!ok||!on||!text)return;const ss=split(text);ss.forEach((x,i)=>q.push({t:x,gap:i===ss.length-1?gapAfter:340}));if(!running)run(gen)}
+ function stop(){gen++;q=[];running=false;if(ok)speechSynthesis.cancel()}
+ function paint(){btn.innerHTML=ic(on?'sound':'mute');btn.setAttribute('aria-pressed',on);btn.setAttribute('aria-label',on?(LANG==='hi'?'आवाज़ चालू':'Voice on'):(LANG==='hi'?'आवाज़ बंद':'Voice off'))}
+ btn.onclick=()=>{on=!on;if(!on)stop();paint();toast(on?(LANG==='hi'?'आवाज़ चालू है':'Voice on: answers will be read aloud'):(LANG==='hi'?'आवाज़ बंद है':'Voice off'))};
+ paint();
+ return{queue,stop,ok,get on(){return on},unlock(){if(ok){const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}},hasVoice:()=>!!v}})();
+const SFX={send(){},recv(){}};
+
+/* ================= helpers ================= */
+const thread=$('#thread'),msgs=$('#msgs'),sugs=$('#sugs');
+const sleep=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
+const now=()=>new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+function scroll(){thread.scrollTo({top:thread.scrollHeight,behavior:reduce?'auto':'smooth'})}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),1800)}
+let lastBot=false;
+function addMsg(who,inner){const m=document.createElement('div');m.className='msg '+who+(who==='bot'&&!lastBot?' first':'');lastBot=who==='bot';
+ m.innerHTML=(who==='bot'?`<div class="av">${AVHTML}</div>`:'')+'<div class="col"></div>';
+ msgs.appendChild(m);const col=m.querySelector('.col');if(inner)col.insertAdjacentHTML('beforeend',inner);scroll();return col}
+async function streamInto(el,html){if(reduce){el.innerHTML=html;return}
+ const tmp=document.createElement('div');tmp.innerHTML=html;el.innerHTML='';
+ async function walk(src,dst){for(const n of [...src.childNodes]){if(n.nodeType===3){for(const w of n.textContent.split(/(\s+)/)){if(!w)continue;if(/^\s+$/.test(w)){dst.appendChild(document.createTextNode(w));continue}const s=document.createElement('span');s.className='wd';s.textContent=w;dst.appendChild(s);await sleep(14)}}else{const c=n.cloneNode(false);dst.appendChild(c);await walk(n,c)}}}
+ await walk(tmp,el)}
+
+/* ================= rich cards ================= */
+const logo=(k,sz=44,cls='logo')=>{const L=LOGO[k];if(L.length===1)return`<div class="${cls} img" style="width:${sz}px;height:${sz}px"><img src="${L[0]}" alt=""></div>`;return`<div class="${cls}" style="background:${L[1]};width:${sz}px;height:${sz}px;font-size:${sz>30?'1rem':'.55rem'}">${L[0]}</div>`};
+function cardExp(limit){const list=limit?EXP.slice(0,limit):EXP;
+ return`<div class="card"><h4>Experience</h4><div class="exp">${list.map(e=>`<div class="co">${logo(e.k)}<div><b class="cn">${e.co}</b><div class="sub">${e.dur}</div><div class="dim">${e.loc}</div><div class="roles">${e.roles.map(r=>`<div class="role" id="r-${r.id}"><b class="rt">${r.t}</b><div class="dim">${r.d}</div><ul>${r.pts.map(p=>`<li>${p}</li>`).join('')}</ul></div>`).join('')}</div></div></div>`).join('')}</div>${limit&&limit<EXP.length?`<button class="more-btn" data-more-exp>Show all ${EXP.length} experiences</button>`:''}</div>`}
+function cardSkills(){return`<div class="card"><h4>Skills</h4><div class="skills">${SKILLS.map(([g,a])=>`<h5>${g}</h5><div class="chips">${a.map(x=>`<span class="chip">${x}</span>`).join('')}</div>`).join('')}</div></div>`}
+function cardAwards(){return`<div class="card"><h4>Honors and awards</h4><div class="gal">${AWARDS.map(([n,o,src],i)=>`<button type="button" class="aw" data-award="${i}"><img src="${src}" alt="${n}"><div><b>${n}</b><small>${o}</small></div></button>`).join('')}</div></div>`}
+function cardCreds(){return`<div class="card"><h4>Licenses and certifications</h4><div class="lst">${CERTS.map(([n,iss,k])=>`<div class="li">${logo(k,40)}<div><b>${n}</b><div class="sub">${iss}</div></div></div>`).join('')}</div></div>
+ <div class="card"><h4>Education</h4><div class="lst">${EDU.map(([n,s,k,url])=>`<div class="li">${logo(k,40)}<div><a class="t" href="${url}" target="_blank" rel="noopener">${n}</a><div class="sub">${s}</div><a class="web" href="${url}" target="_blank" rel="noopener">Visit website ${ic('ext','i s')}</a></div></div>`).join('')}</div></div>`}
+function cardCV(){return`<div class="card"><div class="file"><div class="pdf">PDF</div><div><b>Purusottam_Singh_Resume.pdf</b><small>2 pages</small></div><div class="btns2"><a class="pill solid" href="Purusottam_Singh_Resume.pdf" target="_blank" rel="noopener">View</a><a class="pill" href="Purusottam_Singh_Resume.pdf" download>${ic('download','i s')}</a></div></div></div>`}
+function cardContact(){return`<div class="card"><div class="contact"><a class="pill solid" href="tel:${TEL}" data-call>${ic('phone','i s')}Call ${TEL_SHOW}</a><a class="pill" href="mailto:${EMAIL}">${ic('mail','i s')}Email him</a><a class="pill" href="${LINKEDIN}" target="_blank" rel="noopener">LinkedIn profile</a><button class="pill grey" data-copy="${EMAIL}">${ic('copy','i s')}Copy email</button></div></div>`}
+const CARDS={exp:()=>cardExp(3),skills:cardSkills,awards:cardAwards,creds:cardCreds,cv:cardCV,contact:cardContact};
+
+/* ================= suggestion rotation (never runs out) ================= */
+const lastAsked={};let tick=0,lens=null;
+function pickSugs(prefer){const recent=Object.entries(lastAsked).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
+ const score=k=>(lastAsked[k]??-1);
+ const pool=ALL.filter(k=>!recent.includes(k));
+ const pref=(prefer||[]).filter(k=>pool.includes(k)).sort((a,b)=>score(a)-score(b));
+ let rest=pool.filter(k=>!pref.includes(k));
+ if(lens)rest.sort((a,b)=>((I[a].g===lens?0:1)-(I[b].g===lens?0:1))||score(a)-score(b));else rest.sort((a,b)=>score(a)-score(b));
+ const out=[...pref.filter(k=>score(k)<0),...rest.filter(k=>score(k)<0),...pref.filter(k=>score(k)>=0),...rest.filter(k=>score(k)>=0)];
+ return[...new Set(out)].slice(0,6)}
+function setSugs(keys,personas){sugs.innerHTML='';
+ if(personas){[['s','I\'m a sales leader'],['t','I\'m a tech leader']].forEach(([g,t],i)=>{const b=document.createElement('button');b.className='p';b.type='button';b.textContent=t;b.style.animationDelay=i*50+'ms';b.onclick=()=>chooseLens(g,t);sugs.appendChild(b)})}
+ keys.forEach((k,i)=>{const b=document.createElement('button');b.type='button';b.textContent=I[k].q;b.style.animationDelay=(i+2)*50+'ms';b.onclick=()=>ask(k);sugs.appendChild(b)});sugs.scrollLeft=0}
+async function chooseLens(g,label){if(busy)return;busy=true;lens=g;track('lens-'+g);
+ addMsg('me',`<div class="bub">${label}</div><div class="meta"><span>${now()}</span><span class="seen">Seen</span></div>`);SFX.send();await sleep(300);
+ const col=addMsg('bot','<div class="typing"><i></i><i></i><i></i></div>');await sleep(600);col.innerHTML='';const b=document.createElement('div');b.className='bub';col.appendChild(b);
+ await streamInto(b,g==='s'?'Great. Here\'s what sales leaders usually want to know about a pre-sales hire.':'Great. Here\'s what technical leaders usually ask.');
+ col.insertAdjacentHTML('beforeend',`<div class="meta"><span>${now()}</span></div>`);SFX.recv();busy=false;
+ setSugs(ALL.filter(k=>I[k].g===g).sort((a,b)=>(lastAsked[a]??-1)-(lastAsked[b]??-1)).slice(0,6))}
+
+/* ================= conversation engine ================= */
+let busy=false;
+async function ask(k){if(busy)return;busy=true;sugs.querySelectorAll('button').forEach(b=>b.disabled=true);lastAsked[k]=++tick;track('q-'+k);closeSheet();
+ const Q=I[k];
+ addMsg('me',`<div class="bub">${Q.q}</div><div class="meta"><span>${now()}</span><span class="seen">Seen</span></div>`);VOICE.stop();VOICE.queue(Q.q,650);
+ await sleep(250);
+ const col=addMsg('bot','<div class="typing" aria-label="typing"><i></i><i></i><i></i></div><div class="think"></div>');
+ const think=col.querySelector('.think');
+ for(const s of Q.steps){think.textContent=s+'…';await sleep(380)}
+ col.innerHTML='';VOICE.queue(Q.a.join(' '));
+ for(let i=0;i<Q.a.length;i++){const b=document.createElement('div');b.className='bub';col.appendChild(b);scroll();await streamInto(b,Q.a[i]);if(i<Q.a.length-1)await sleep(160)}
+ if(Q.viz)col.insertAdjacentHTML('beforeend',vizCard(Q.viz));
+ if(Q.card)col.insertAdjacentHTML('beforeend',CARDS[Q.card]());
+ const ex=[];
+ if(Q.src.length)ex.push(`<div class="src">${Q.src.map(s=>`<button type="button" data-src="${s}">${logo(SRCLOGO[s],16,'lg')}${SRCNAME[s]}</button>`).join('')}</div>`);
+ ex.push(`<details class="how"><summary>${ic('check','i s')}How I found this</summary><ol>${Q.steps.map(s=>`<li>${s}</li>`).join('')}<li class="ok">Grounded in the CV, no client names shared</li></ol></details>`);
+ ex.push(`<div class="meta"><span>${now()}</span><span class="tools"><button type="button" data-say>${ic('speak','i s')}Listen</button><button type="button" data-cp>${ic('copy','i s')}Copy</button></span></div>`);
+ col.insertAdjacentHTML('beforeend',ex.join(''));col.dataset.text=Q.a.join(' ').replace(/<[^>]+>/g,'');
+ SFX.recv();setTimeout(scroll,40);busy=false;setSugs(pickSugs(Q.next));}
+
+/* ================= lightbox ================= */
+const lb=$('#lb'),lbin=$('#lbin');
+function openLB(html){lbin.innerHTML=html;lb.classList.add('on');$('#lbx').focus()}
+function closeLB(){lb.classList.remove('on');lbin.innerHTML=''}
+function openProfile(){track('photo');openLB(`<div class="lb-card"><div class="lb-cover"></div><div class="lb-av">${AVHTML}</div><div class="lb-body"><h3>Purusottam Singh</h3><div class="hl">${HEADLINE}</div><div class="loc">Mumbai, Maharashtra, India</div><div class="acts"><a class="pill solid" href="${LINKEDIN}" target="_blank" rel="noopener">View LinkedIn profile</a><a class="pill" href="tel:${TEL}">${ic('phone','i s')}Call</a><a class="pill" href="mailto:${EMAIL}">Email</a></div></div></div>`)}
+$('#lbx').onclick=closeLB;lb.addEventListener('click',e=>{if(e.target===lb||e.target.classList.contains('lb-wrap'))closeLB()});
+document.querySelectorAll('[data-zoom]').forEach(el=>{el.onclick=openProfile;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openProfile()}}});
+
+/* ================= delegated actions ================= */
+document.addEventListener('click',async e=>{
+ const aw=e.target.closest('[data-award]');if(aw){const[n,o,src]=AWARDS[+aw.dataset.award];openLB(`<div class="lb-wrap"><img class="lb-img" src="${src}" alt="${n}"><div class="lb-cap">${n} · ${o}</div></div>`);return}
+ const s=e.target.closest('[data-src]');if(s&&!busy){const k=s.dataset.src;
+   if(['kore','gs','sse','act','idm','tm'].includes(k)){const col=addMsg('bot','');col.insertAdjacentHTML('beforeend',cardExp());const el=col.querySelector('#r-'+k);if(el)setTimeout(()=>{el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});el.classList.add('hl-flash')},120)}
+   else ask(k==='awards'?'awards':'creds');return}
+ if(e.target.closest('[data-more-exp]')){e.target.closest('.card').outerHTML=cardExp();return}
+ if(e.target.closest('[data-call]'))track('call');
+ const say=e.target.closest('[data-say]');if(say){if(!VOICE.ok){toast('Read-aloud is not supported here');return}VOICE.stop();VOICE.queue(say.closest('.col').dataset.text);return}
+ const cp=e.target.closest('[data-cp]');if(cp){try{await navigator.clipboard.writeText(cp.closest('.col').dataset.text);toast('Copied')}catch(_){toast('Copy not available')}return}
+ const ce=e.target.closest('[data-copy]');if(ce){try{await navigator.clipboard.writeText(ce.dataset.copy);toast('Email copied')}catch(_){toast(ce.dataset.copy)}return}
+});
+
+/* ================= sheet (all topics) ================= */
+const GROUPS=[['Deals and customers',[['deals','target'],['cxo','user'],['discovery','search'],['rfp','file'],['team','team'],['selling','handshake'],['fit','check'],['bfsi','bank'],['region','map'],['lead','layers']]],
+ ['Technical depth',[['eng','code'],['agentic','flow'],['integ','plug'],['voice','wave'],['model','cpu'],['build','code'],['platforms','layers']]],
+ ['Profile',[['exp','brief'],['skills','spark'],['awards','trophy'],['creds','badge']]],['Next steps',[['cv','doc'],['contact','mail']]]];
+$('#opts').innerHTML=GROUPS.map(([g,a])=>`<div class="grp">${g}</div>`+a.map(([k,icn])=>`<button class="opt" data-k="${k}">${ic(icn)}${I[k].q}</button>`).join('')).join('');
+$('#opts').addEventListener('click',e=>{const o=e.target.closest('.opt');if(o)ask(o.dataset.k)});
+function openSheet(){$('#scrim').classList.add('on');$('#sheet').classList.add('on');track('menu')}
+function closeSheet(){$('#scrim').classList.remove('on');$('#sheet').classList.remove('on')}
+['#menu','#menu2'].forEach(s=>$(s).onclick=openSheet);$('#scrim').onclick=closeSheet;
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closeLB()}if(e.key==='/'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();openSheet()}});
+$('#dl').onclick=()=>{const a=document.createElement('a');a.href='Purusottam_Singh_Resume.pdf';a.download='';a.click();toast('Downloading CV')};
+
+
+/* ================= AI answers (Gemini, with Groq fallback, via Netlify Function) ================= */
+const HIST=[];
+const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*/g,'');
+async function askAI(q){q=q.trim();if(!q||busy)return;busy=true;track('ai');closeSheet();
+ sugs.querySelectorAll('button').forEach(b=>b.disabled=true);$('#send').disabled=true;
+ addMsg('me',`<div class="bub">${esc(q)}</div><div class="meta"><span>${now()}</span><span class="seen">Seen</span></div>`);VOICE.stop();VOICE.queue(q,650);
+ await sleep(200);
+ const col=addMsg('bot','<div class="typing" aria-label="typing"><i></i><i></i><i></i></div><div class="think"></div>');
+ const think=col.querySelector('.think');const steps=['Reading his CV…','Checking the facts…','Writing the answer…'];let si=0;think.textContent=steps[0];
+ const tmr=setInterval(()=>{si=Math.min(si+1,steps.length-1);think.textContent=steps[si]},900);
+ let data=null,err='';
+ try{const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),20000);
+  const r=await fetch('/.netlify/functions/ask',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({question:q,history:HIST.slice(-4)}),signal:ctl.signal});
+  clearTimeout(to);data=await r.json().catch(()=>null);if(!r.ok||!data||!data.answer){err=(data&&data.error)||'offline';data=null}}catch(e){err='offline'}
+ clearInterval(tmr);col.innerHTML='';
+ if(!data){const b=document.createElement('div');b.className='bub';col.appendChild(b);
+  const msg=err&&err!=='offline'?err:'I couldn\'t reach the AI just now. These questions always work, so try one below.';
+  await streamInto(b,esc(msg));VOICE.queue(msg);col.insertAdjacentHTML('beforeend',`<div class="meta"><span>${now()}</span></div>`);
+  busy=false;$('#send').disabled=false;setSugs(pickSugs([]));return}
+ col.insertAdjacentHTML('beforeend',`<span class="aitag">${ic('spark','i s')}AI answer · from his CV</span>`);
+ const b=document.createElement('div');b.className='bub';col.appendChild(b);VOICE.queue(data.answer);
+ await streamInto(b,md(data.answer));
+ const ex=[];
+ if(data.sources&&data.sources.length)ex.push(`<div class="src">${data.sources.filter(s=>SRCNAME[s]).map(s=>`<button type="button" data-src="${s}">${logo(SRCLOGO[s],16,'lg')}${SRCNAME[s]}</button>`).join('')}</div>`);
+ ex.push(`<details class="how"><summary>${ic('check','i s')}How I found this</summary><ol><li>Understood your question</li><li>Searched only his CV</li><li>Answered by ${data.model==='groq'?'Llama on Groq (backup model)':'Google Gemini'}</li><li class="ok">Grounded in the CV, no client names shared</li></ol></details>`);
+ ex.push(`<div class="meta"><span>${now()}</span><span class="tools"><button type="button" data-say>${ic('speak','i s')}Listen</button><button type="button" data-cp>${ic('copy','i s')}Copy</button></span></div>`);
+ col.insertAdjacentHTML('beforeend',ex.join(''));col.dataset.text=data.answer.replace(/\*/g,'');
+ HIST.push({role:'user',content:q},{role:'assistant',content:data.answer});
+ setTimeout(scroll,40);busy=false;$('#send').disabled=false;setSugs(pickSugs([]));}
+$('#askf').addEventListener('submit',e=>{e.preventDefault();const v=$('#qin').value;$('#qin').value='';askAI(v)});
+
+/* ================= voice input (browser speech recognition) ================= */
+(()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const mic=$('#mic');
+ if(!SR){mic.style.display='none';return}
+ let rec=null,finalText='';
+ mic.onclick=()=>{if(rec){rec.stop();return}
+  VOICE.stop();finalText='';rec=new SR();rec.lang=document.documentElement.lang.startsWith('hi')?'hi-IN':'en-IN';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;
+  const inp=$('#qin');inp.placeholder='Listening…';mic.classList.add('on');track('mic');
+  rec.onresult=e=>{let t='';for(const r of e.results){t+=r[0].transcript;if(r.isFinal)finalText=t}inp.value=t};
+  rec.onerror=e=>{if(e.error!=='aborted'&&e.error!=='no-speech')toast(e.error==='not-allowed'?'Allow microphone access to ask by voice':'Couldn\'t hear that. Try again or type.')};
+  rec.onend=()=>{mic.classList.remove('on');inp.placeholder='Ask anything about Puru…';const q=(finalText||inp.value).trim();rec=null;if(q){inp.value='';askAI(q)}};
+  try{rec.start()}catch(_){mic.classList.remove('on');rec=null}};})();
+
+/* ================= tab bar ================= */
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('act',x===b));
+ if(t!=='chat'){ask(t);setTimeout(()=>document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('act',x.dataset.tab==='chat')),900)}else scroll()});
+
+/* ================= greeting ================= */
+(async()=>{setSugs([]);await sleep(500);
+ const col=addMsg('bot','<div class="typing"><i></i><i></i><i></i></div>');await sleep(800);col.innerHTML='';
+ const b=document.createElement('div');b.className='bub';col.appendChild(b);
+ const GREET=[`Hi${PRO.who?' '+PRO.who:''}! Ask me anything about Puru's work.`,'Every answer comes from his CV, so nothing here is made up. Pick a question, type your own below, or tap the mic and just ask.'];
+ await streamInto(b,GREET[0]);
+ await sleep(220);const b2=document.createElement('div');b2.className='bub';col.appendChild(b2);
+ await streamInto(b2,GREET[1]);
+ col.insertAdjacentHTML('beforeend',`<div class="meta"><span>${now()}</span></div>`);
+ VOICE.queue(GREET.join(' '));scroll();setSugs([...new Set([...(PRO.first||[]),'fit','deals','agentic','cxo','eng','bfsi'])].slice(0,6));})();
+</script>
+</body>
+</html>
