@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Résumé analytics · private</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a66c2'/%3E%3Cpath d='M16 44V30M28 44V22M40 44V34M52 44V16' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f4f2ee;--card:#fff;--line:#e0dfdc;--ink:rgba(0,0,0,.9);--muted:rgba(0,0,0,.6);--faint:rgba(0,0,0,.45);--blue:#0a66c2;--blue-t:#e8f0fb;--green:#057642;--green-t:#e6f4ea;--hot:#cc1016;--hot-t:#fde8e8;--warm:#915907;--warm-t:#fcf1dc;
+ --font:-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:980px;margin:0 auto;padding:0 12px 60px}
+header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line)}
+header .in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 12px}
+header h1{font-size:1.05rem;font-weight:600;flex:1}
+header small{display:block;font-size:.75rem;color:var(--faint);font-weight:400}
+.ib{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600;color:var(--muted)}
+.ib:hover{border-color:var(--blue);color:var(--blue)}
+.tabs{display:flex;gap:4px;max-width:980px;margin:0 auto;padding:0 8px;overflow-x:auto}
+.tabs button{border:none;background:none;padding:10px 12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button.on{color:var(--ink);border-color:var(--ink)}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;color:var(--green);background:var(--green-t);padding:4px 10px;border-radius:999px}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pl 1.4s infinite}
+.live.off{color:var(--faint);background:#eee}.live.off i{background:#bbb;animation:none}
+@keyframes pl{50%{opacity:.3}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-top:12px;overflow:hidden}
+.card h2{font-size:1rem;font-weight:600;padding:14px 16px 4px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card h2 small{font-weight:400;color:var(--faint);font-size:.8rem}
+.pad{padding:8px 16px 16px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;padding:8px 16px 16px}
+.tile{background:var(--blue-t);border-radius:10px;padding:12px}
+.tile b{display:block;font-size:1.6rem;color:var(--blue);line-height:1.1}
+.tile span{font-size:.8rem;color:var(--muted)}
+.tile.first{background:var(--blue)}.tile.first b,.tile.first span{color:#fff}
+.funnel .row{margin:10px 0 14px}
+.funnel .lbl{font-weight:600;font-size:.9rem;margin-bottom:6px}
+.fsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.fstep{background:#f3f6f9;border-radius:8px;padding:8px;text-align:center;position:relative;overflow:hidden}
+.fstep .bar{position:absolute;left:0;bottom:0;height:4px;background:var(--blue)}
+.fstep b{display:block;font-size:1.1rem}
+.fstep small{font-size:.72rem;color:var(--muted)}
+.vrow{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:10px 16px;border-top:1px solid var(--line);cursor:pointer}
+.vrow:hover{background:#fafafa}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.8rem;color:#fff;position:relative}
+.av.live::after{content:"";position:absolute;right:0;bottom:0;width:11px;height:11px;border-radius:50%;background:#01754f;border:2px solid #fff}
+.vname{font-weight:600}
+.vsub{font-size:.8rem;color:var(--muted)}
+.vmeta{text-align:right;font-size:.78rem;color:var(--faint)}
+.badge{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.02em;vertical-align:1px}
+.badge.hot{background:var(--hot-t);color:var(--hot)}.badge.warm{background:var(--warm-t);color:var(--warm)}.badge.cold{background:#eee;color:var(--faint)}
+.badge.link{background:var(--blue-t);color:var(--blue);text-transform:none}
+.badge.gap{background:var(--hot-t);color:var(--hot);text-transform:none}
+.filters{display:flex;gap:6px;flex-wrap:wrap;padding:6px 16px 10px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:.82rem;font-weight:600;color:var(--muted)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.bars .b{margin:8px 0}
+.bars .t{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:3px;gap:10px}
+.bars .t span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bars .track{height:8px;background:#eef2f6;border-radius:6px;overflow:hidden}
+.bars .fill{height:100%;background:var(--blue);border-radius:6px}
+.feed .it{display:grid;grid-template-columns:28px 1fr auto;gap:8px;padding:8px 16px;border-top:1px solid var(--line);font-size:.88rem;align-items:start}
+.feed .it .ic{font-size:1rem;line-height:1.3}
+.feed .it small{color:var(--faint);font-size:.75rem;white-space:nowrap}
+.empty{padding:18px 16px;color:var(--faint);font-size:.9rem}
+/* detail sheet */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:20}
+.scrim.on{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:90vh;background:#fff;border-radius:16px 16px 0 0;z-index:21;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;max-width:760px;margin:0 auto}
+.sheet.on{transform:none}
+.sheet .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.sheet .hd .x{margin-left:auto}
+.sheet .bd{overflow:auto;padding:0 0 20px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px}
+.kv div{background:#f7f7f7;border-radius:8px;padding:8px 10px}
+.kv small{display:block;font-size:.72rem;color:var(--faint)}
+.kv b{font-size:.9rem;font-weight:600;word-break:break-word}
+.note{padding:4px 16px 12px;display:grid;gap:8px}
+.note input,.note textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit;font-size:.9rem}
+.note textarea{min-height:60px;resize:vertical}
+.save{background:var(--blue);color:#fff;border:none;border-radius:999px;padding:8px 16px;font-weight:600;justify-self:start}
+.sess{padding:10px 16px 2px;font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+/* login */
+.login{max-width:360px;margin:18vh auto 0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px}
+.login h1{font-size:1.2rem;margin-bottom:4px}.login p{color:var(--muted);font-size:.9rem;margin-bottom:14px}
+.login input{width:100%;border:1px solid var(--line);border-radius:8px;padding:11px;font:inherit;margin-bottom:10px}
+.login button{width:100%;background:var(--blue);color:#fff;border:none;border-radius:999px;padding:11px;font-weight:600}
+.err{color:var(--hot);font-size:.85rem;margin-top:8px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div id="loginView" class="login">
+  <h1>Résumé analytics</h1>
+  <p>Private dashboard. Enter your password.</p>
+  <form id="lf"><input id="pw" type="password" autocomplete="current-password" placeholder="Password"><button>Open dashboard</button></form>
+  <div class="err" id="lerr"></div>
+</div>
+
+<div id="app" class="hide">
+  <header>
+    <div class="in">
+      <h1>Résumé analytics<small id="upd">Loading…</small></h1>
+      <span class="live off" id="livePill"><i></i><span>0 live</span></span>
+      <button class="ib" id="refresh">↻</button>
+      <button class="ib" id="csv">CSV</button>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-t="overview" class="on">Overview</button><button data-t="visitors">Visitors</button><button data-t="questions">Questions</button><button data-t="breakdowns">Breakdowns</button>
+    </nav>
+  </header>
+  <main class="wrap">
+    <section data-v="overview">
+      <div class="card"><h2>At a glance</h2><div class="tiles" id="tiles"></div></div>
+      <div class="card"><h2>Hot leads <small>sorted by score</small></h2><div id="hotList"></div></div>
+      <div class="card"><h2>Funnel by link</h2><div class="pad funnel" id="funnel"></div></div>
+      <div class="card"><h2>Live now</h2><div id="liveList"></div></div>
+      <div class="card"><h2>Recent activity</h2><div class="feed" id="feed"></div></div>
+    </section>
+    <section data-v="visitors" class="hide">
+      <div class="card"><h2>All visitors <small id="vcount"></small></h2>
+        <div class="filters" id="vfilters"></div>
+        <div id="vlist"></div></div>
+    </section>
+    <section data-v="questions" class="hide">
+      <div class="card"><h2>Top questions</h2><div class="pad bars" id="topQ"></div></div>
+      <div class="card"><h2>Gap finder <small>not answered by your CV</small></h2><div id="gaps"></div></div>
+    </section>
+    <section data-v="breakdowns" class="hide" id="bd"></section>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet"><div class="hd" id="shd"></div><div class="bd" id="sbd"></div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let KEY=sessionStorage.getItem('dash-key')||'',DATA=null,filter={link:'All',sort:'recent'};
+const COLORS=['#0a66c2','#7b3fe4','#057642','#c4161c','#915907','#1e5aa8','#0f766e','#b45309'];
+const col=v=>COLORS[[...v].reduce((a,c)=>a+c.charCodeAt(0),0)%COLORS.length];
+const ago=t=>{const s=(Date.now()-t)/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago'};
+const ist=t=>new Date(t).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+const mins=s=>s<60?Math.round(s)+'s':Math.round(s/60)+' min';
+const ICON={visit:'👀',q:'💬',ai:'✨',call:'📞',email:'✉️',linkedin:'🔗',cv:'📄',card:'👆',lang:'🌐',mic:'🎤',voice:'🔊',listen:'🔈',copy:'📋',leave:'🚪'};
+function describe(e){const d=e.data||{};switch(e.ev){
+ case'visit':return`Opened the page · via ${esc(d.source||'direct')}`;
+ case'q':return`Asked: <b>${esc(d.text)}</b>`;
+ case'ai':return`Typed: <b>${esc(d.text)}</b>${d.failed?' <span class="badge gap">AI failed</span>':d.covered===false?' <span class="badge gap">not in CV</span>':''}`;
+ case'call':return'<b>Tapped Call</b>';case'email':return'<b>Tapped Email</b>';case'linkedin':return'Opened LinkedIn';case'cv':return'<b>Opened CV</b>';
+ case'leave':return`Left · ${mins(d.secs||0)} on site`;default:return esc(d.what||e.ev)}}
+async function api(q='',opt={}){const r=await fetch('/.netlify/functions/dash'+q,{...opt,headers:{'x-dash-key':KEY,'content-type':'application/json',...(opt.headers||{})}});
+ if(r.status===401){logout('Wrong password');throw new Error('401')}const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j}
+function logout(msg){KEY='';sessionStorage.removeItem('dash-key');$('#app').classList.add('hide');$('#loginView').classList.remove('hide');$('#lerr').textContent=msg||''}
+$('#lf').onsubmit=async e=>{e.preventDefault();KEY=$('#pw').value.trim();$('#lerr').textContent='';try{await load();sessionStorage.setItem('dash-key',KEY);$('#loginView').classList.add('hide');$('#app').classList.remove('hide')}catch(err){if(err.message!=='401')$('#lerr').textContent=err.message}};
+async function load(){DATA=await api('?view=summary');render();$('#upd').textContent='Updated '+new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'numeric',minute:'2-digit',second:'2-digit'})}
+function vrow(v){const tierB=`<span class="badge ${v.tier}">${v.tier}</span>`;
+ return`<div class="vrow" data-vid="${v.vid}"><div class="av ${v.live?'live':''}" style="background:${col(v.vid)}">${v.vid.slice(0,2)}</div>
+ <div><div class="vname">${v.label?esc(v.label):'Visitor #'+v.vid.slice(0,4)} ${tierB} <span class="badge link">${esc(v.link)}</span></div>
+ <div class="vsub">${esc(v.city||'Unknown')} · ${esc(v.device)}${v.org?' · 🏢 '+esc(v.org):''}</div>
+ <div class="vsub">${v.visits} visit${v.visits>1?'s':''} · ${v.questions} Q · ${v.cv?'CV ✓ · ':''}${v.contact?'contact ✓ · ':''}${mins(v.secs)}</div></div>
+ <div class="vmeta">${ago(v.last)}<br>score ${v.score}</div></div>`}
+function bars(list,el){if(!list.length){el.innerHTML='<div class="empty">No data yet.</div>';return}const max=Math.max(...list.map(x=>x[1]));
+ el.innerHTML=list.map(([k,n])=>`<div class="b"><div class="t"><span>${esc(k)}</span><b>${n}</b></div><div class="track"><div class="fill" style="width:${n/max*100}%"></div></div></div>`).join('')}
+function render(){const D=DATA,o=D.overview;
+ const lp=$('#livePill');lp.classList.toggle('off',!D.live.length);lp.querySelector('span').textContent=D.live.length+' live';
+ $('#tiles').innerHTML=[['first',o.visitors,'unique visitors'],['',o.today,'visits today'],['',o.week,'visits (7 days)'],['',o.visits,'visits all time'],['',o.questions,'questions asked'],['',o.cv,'CV opens'],['',o.calls+o.emails,'call / email taps']]
+  .map(([c,n,l])=>`<div class="tile ${c}"><b>${n}</b><span>${l}</span></div>`).join('');
+ const hot=[...D.visitors].filter(v=>v.tier!=='cold').sort((a,b)=>b.score-a.score).slice(0,8);
+ $('#hotList').innerHTML=hot.length?hot.map(vrow).join(''):'<div class="empty">No warm or hot visitors yet.</div>';
+ $('#funnel').innerHTML=Object.entries(D.funnel).map(([l,f])=>{const s=[['opened','Opened'],['asked','Asked'],['cv','CV'],['contact','Contact']];
+  return`<div class="row"><div class="lbl">${esc(l)} link</div><div class="fsteps">${s.map(([k,t])=>`<div class="fstep"><b>${f[k]}</b><small>${t}${f.opened?' · '+Math.round(f[k]/f.opened*100)+'%':''}</small><div class="bar" style="width:${f.opened?f[k]/f.opened*100:0}%"></div></div>`).join('')}</div></div>`}).join('')||'<div class="empty">No visits yet.</div>';
+ $('#liveList').innerHTML=D.live.length?D.live.map(vrow).join(''):'<div class="empty">Nobody on the site right now.</div>';
+ $('#feed').innerHTML=D.feed.length?D.feed.map(e=>`<div class="it" data-vid="${e.vid}"><span class="ic">${ICON[e.ev]||'•'}</span><div><b>${e.label?esc(e.label):'#'+e.vid.slice(0,4)}</b> · ${describe(e)} <span class="badge link">${esc(e.link)}</span></div><small>${ago(e.t)}</small></div>`).join(''):'<div class="empty">No activity yet.</div>';
+ const links=['All',...new Set(D.visitors.map(v=>v.link))];
+ $('#vfilters').innerHTML=links.map(l=>`<button class="chip ${filter.link===l?'on':''}" data-link="${esc(l)}">${esc(l)}</button>`).join('')+
+  `<button class="chip ${filter.sort==='recent'?'on':''}" data-sort="recent">Recent</button><button class="chip ${filter.sort==='score'?'on':''}" data-sort="score">Hottest</button>`;
+ let vs=D.visitors.filter(v=>filter.link==='All'||v.link===filter.link);if(filter.sort==='score')vs=[...vs].sort((a,b)=>b.score-a.score);
+ $('#vcount').textContent=vs.length+' shown';$('#vlist').innerHTML=vs.length?vs.map(vrow).join(''):'<div class="empty">No visitors yet.</div>';
+ bars(D.topQuestions,$('#topQ'));
+ $('#gaps').innerHTML=D.gaps.length?D.gaps.map(g=>`<div class="feed"><div class="it"><span class="ic">🕳️</span><div>${esc(g.text)} ${g.failed?'<span class="badge gap">AI failed</span>':''}</div><small>×${g.count} · ${ago(g.last)}</small></div></div>`).join(''):'<div class="empty">No gaps yet. Every question was answered from your CV.</div>';
+ const B=D.breakdowns;$('#bd').innerHTML=[['city','Cities'],['device','Devices'],['source','Came via'],['network','Company networks'],['link','Links']].map(([k,t])=>`<div class="card"><h2>${t}${k==='network'?' <small>office Wi-Fi only</small>':''}</h2><div class="pad bars" id="b-${k}"></div></div>`).join('');
+ for(const k of Object.keys(B))bars(B[k],$('#b-'+k));}
+document.addEventListener('click',e=>{const f=e.target.closest('[data-link]');if(f){filter.link=f.dataset.link;render();return}
+ const s=e.target.closest('[data-sort]');if(s){filter.sort=s.dataset.sort;render();return}
+ const r=e.target.closest('[data-vid]');if(r&&!e.target.closest('.sheet'))openVisitor(r.dataset.vid)});
+$('#tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('[data-v]').forEach(s=>s.classList.toggle('hide',s.dataset.v!==b.dataset.t));scrollTo(0,0)};
+async function openVisitor(vid){const d=await api('?view=visitor&vid='+vid);const v=d.visitor;
+ $('#shd').innerHTML=`<div class="av" style="background:${col(v.vid)}">${v.vid.slice(0,2)}</div><div><div class="vname">${v.label?esc(v.label):'Visitor #'+v.vid.slice(0,4)} <span class="badge ${v.tier||'cold'}">${v.tier||'cold'}</span></div><div class="vsub">score ${v.score||0} · ${esc(v.link||'Main')} link</div></div><button class="ib x" id="sx">Close</button>`;
+ const c=v.counts||{};
+ const kv=[['First seen',ist(v.first)],['Last seen',ist(v.last)],['Visits',v.visits],['Time on site',mins(v.secs||0)],['Location',[v.city,v.region,v.country].filter(Boolean).join(', ')||'Unknown'],['Device',`${v.type||''} · ${v.os} · ${v.browser}`],['Came via',v.source||'—'],['Network',v.org?(v.org+(v.orgIsCarrier?' (mobile/ISP)':'')):'—'],['Questions',(c.q||0)+(c.ai||0)],['CV / Call / Email',`${c.cv||0} / ${c.call||0} / ${c.email||0}`]];
+ const sessions={};for(const e of d.events){(sessions[e.sid]||=[]).push(e)}
+ const order=Object.entries(sessions).sort((a,b)=>b[1][0].t-a[1][0].t);
+ $('#sbd').innerHTML=`<div class="kv">${kv.map(([k,x])=>`<div><small>${k}</small><b>${esc(x)}</b></div>`).join('')}</div>
+ <div class="note"><input id="lbl" placeholder="Your label, e.g. probably Mridul" value="${esc(v.label||'')}"><textarea id="nt" placeholder="Notes (only you see this)">${esc(v.note||'')}</textarea><button class="save" id="sv">Save label</button></div>
+ ${order.map(([sid,evs],i)=>`<div class="sess">Visit ${order.length-i} · ${ist(evs[0].t)}</div><div class="feed">${evs.map(e=>`<div class="it"><span class="ic">${ICON[e.ev]||'•'}</span><div>${describe(e)}</div><small>${new Date(e.t).toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'numeric',minute:'2-digit'})}</small></div>`).join('')}</div>`).join('')||'<div class="empty">No events.</div>'}`;
+ $('#scrim').classList.add('on');$('#sheet').classList.add('on');
+ $('#sx').onclick=closeSheet;
+ $('#sv').onclick=async()=>{await api('',{method:'POST',body:JSON.stringify({action:'label',vid,label:$('#lbl').value,note:$('#nt').value})});$('#sv').textContent='Saved ✓';load()}}
+function closeSheet(){$('#scrim').classList.remove('on');$('#sheet').classList.remove('on')}
+$('#scrim').onclick=closeSheet;
+$('#refresh').onclick=()=>load().catch(e=>alert(e.message));
+$('#csv').onclick=async()=>{const r=await fetch('/.netlify/functions/dash?view=csv',{headers:{'x-dash-key':KEY}});const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='resume-activity.csv';a.click()};
+setInterval(()=>{if(KEY&&document.visibilityState==='visible')load().catch(()=>{})},30000);
+if(KEY)load().then(()=>{$('#loginView').classList.add('hide');$('#app').classList.remove('hide')}).catch(()=>{});
+</script>
+</body>
+</html>
