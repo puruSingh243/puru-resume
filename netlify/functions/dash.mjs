@@ -1,5 +1,5 @@
 // Private dashboard API. Protected by DASHBOARD_PASSWORD (Netlify env var).
-import { getJSON, setJSON, listKeys, istDay, tier } from "../lib/core.mjs";
+import { getJSON, setJSON, listKeys, istDay, tier, isBotNet } from "../lib/core.mjs";
 
 const J = (b, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 const bump = (m, k) => { if (!k) k = "Unknown"; m[k] = (m[k] || 0) + 1; };
@@ -48,10 +48,13 @@ export default async (req) => {
     return new Response(csv, { headers: { "content-type": "text/csv", "content-disposition": "attachment; filename=resume-activity.csv" } });
   }
 
-  const ov = { visitors: all.length, visits: 0, today: 0, week: 0, questions: 0, cv: 0, calls: 0, emails: 0 };
+  const isBot = (v) => !!v.bot || isBotNet(v.org || "");
+  const bots = all.filter(({ v }) => isBot(v));
+  const humans = all.filter(({ v }) => !isBot(v));
+  const ov = { bots: bots.length, visitors: humans.length, visits: 0, today: 0, week: 0, questions: 0, cv: 0, calls: 0, emails: 0 };
   const funnel = {}; const qCount = {}; const qText = {}; const gaps = {}; const city = {}, device = {}, source = {}, org = {}, link = {};
   const feed = [];
-  for (const { v, e } of all) {
+  for (const { v, e } of humans) {
     ov.visits += v.visits || 0;
     ov.cv += v.counts?.cv || 0; ov.calls += v.counts?.call || 0; ov.emails += v.counts?.email || 0;
     bump(city, [v.city, v.country].filter(Boolean).join(", ")); bump(device, `${v.type || ""} · ${v.os} · ${v.browser}`); bump(source, v.source); bump(link, v.link);
@@ -72,11 +75,11 @@ export default async (req) => {
     vid: v.vid, label: v.label || "", first: v.first, last: v.last, visits: v.visits || 0, score: v.score || 0, tier: v.tier || tier(v.score || 0),
     city: [v.city, v.country].filter(Boolean).join(", "), device: `${v.os} · ${v.browser}`, type: v.type, source: v.source || "", link: v.link || "Main",
     org: v.org && !v.orgIsCarrier ? v.org : "", questions: (v.counts?.q || 0) + (v.counts?.ai || 0), cv: v.counts?.cv || 0,
-    contact: (v.counts?.call || 0) + (v.counts?.email || 0), secs: v.secs || 0, live: now - (v.lastPing || 0) < 75000,
+    contact: (v.counts?.call || 0) + (v.counts?.email || 0), secs: v.secs || 0, live: now - (v.lastPing || 0) < 150000, bot: isBot(v),
   })).sort((a, b) => b.last - a.last);
   feed.sort((a, b) => b.t - a.t);
   return J({
-    overview: ov, live: visitors.filter((x) => x.live), funnel, visitors,
+    overview: ov, live: visitors.filter((x) => x.live && !x.bot), funnel, visitors,
     topQuestions: top(qCount, 15).map(([k, n]) => [qText[k] || k, n]), gaps: Object.values(gaps).sort((a, b) => b.count - a.count || b.last - a.last).slice(0, 20),
     breakdowns: { city: top(city), device: top(device), source: top(source), network: top(org), link: top(link) },
     feed: feed.slice(0, 40), generated: now,

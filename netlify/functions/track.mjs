@@ -1,5 +1,5 @@
 // Records visitor activity for the private dashboard and sends Telegram alerts.
-import { getJSON, setJSON, telegram, parseUA, sourceOf, score, tier, HOT, who, orgOf, isCarrier, esc, IST } from "../lib/core.mjs";
+import { getJSON, setJSON, telegram, parseUA, sourceOf, score, tier, HOT, who, orgOf, isCarrier, isBotNet, HEADLESS, esc, IST } from "../lib/core.mjs";
 
 const EVS = new Set(["visit", "hb", "leave", "q", "ai", "call", "email", "linkedin", "cv", "card", "lang", "mic", "voice", "listen", "copy"]);
 const clip = (s, n = 200) => String(s ?? "").slice(0, n);
@@ -15,7 +15,7 @@ export default async (req, context) => {
 
   let b; try { b = JSON.parse(await req.text()); } catch (_) { return new Response("bad", { status: 400 }); }
   const ua = req.headers.get("user-agent") || "";
-  if (/bot|crawler|spider|preview|facebookexternalhit|WhatsApp\//i.test(ua)) return new Response("bot", { status: 204 });
+  if (/bot|crawler|spider|preview|facebookexternalhit|WhatsApp\//i.test(ua) || HEADLESS.test(ua)) return new Response(null, { status: 204 });
   const vid = String(b.vid || ""), sid = String(b.sid || "");
   if (!/^[A-Z0-9]{6,12}$/.test(vid) || !/^[A-Z0-9]{6,12}$/.test(sid)) return new Response("bad id", { status: 400 });
   const ev = String(b.ev || "");
@@ -48,6 +48,7 @@ export default async (req, context) => {
     const keys = Object.keys(v.sessions); if (keys.length > 30) delete v.sessions[keys[0]];
     const src = sourceOf(clip(b.ref, 300), ua); v.source = src;
     if (!v.org) { const org = await orgOf(ip); v.org = org; v.orgIsCarrier = isCarrier(org); }
+    if (isBotNet(v.org)) v.bot = true;
     add({ data: { source: src, city: where, device: `${dev.os} · ${dev.browser}`, org: v.org || "" } });
     const orgLine = v.org && !v.orgIsCarrier ? `\n🏢 Network: <b>${esc(v.org)}</b>` : "";
     if (v.visits === 1) alerts.push(`👀 <b>New visitor</b>\n${tag}\n📍 ${esc(where)} · ${esc(dev.type)} · ${esc(dev.os)} · ${esc(dev.browser)}\n↪️ Came via: ${esc(src)}${orgLine}\n🕒 ${IST(now)} IST`);
@@ -88,6 +89,6 @@ export default async (req, context) => {
 
   await setJSON(vKey, v);
   if (events) await setJSON(eKey, events);
-  for (const a of alerts) await telegram(a);
+  if (!v.bot) for (const a of alerts) await telegram(a);
   return new Response(JSON.stringify({ ok: true, score: v.score, tier: v.tier, isNew }), { headers: { "content-type": "application/json" } });
 };

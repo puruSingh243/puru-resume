@@ -1,5 +1,5 @@
 // Daily 9:00 AM IST Telegram digest + 90-day data retention.
-import { getJSON, listKeys, del, telegram, istDay, esc } from "../lib/core.mjs";
+import { getJSON, listKeys, del, telegram, istDay, esc, isBotNet } from "../lib/core.mjs";
 
 export const config = { schedule: "30 3 * * *" }; // 03:30 UTC = 09:00 IST
 
@@ -11,6 +11,7 @@ export default async () => {
   for (const k of keys) {
     const v = await getJSON(k); if (!v) continue;
     if (now - (v.last || 0) > 90 * 864e5) { await del(k); await del("e/" + v.vid); continue; } // retention
+    if (v.bot || isBotNet(v.org || "")) continue;
     const e = await getJSON("e/" + v.vid, []);
     const y = e.filter((x) => istDay(x.t) === yesterday);
     if (!y.length) continue;

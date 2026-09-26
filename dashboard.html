@@ -166,18 +166,18 @@ function bars(list,el){if(!list.length){el.innerHTML='<div class="empty">No data
  el.innerHTML=list.map(([k,n])=>`<div class="b"><div class="t"><span>${esc(k)}</span><b>${n}</b></div><div class="track"><div class="fill" style="width:${n/max*100}%"></div></div></div>`).join('')}
 function render(){const D=DATA,o=D.overview;
  const lp=$('#livePill');lp.classList.toggle('off',!D.live.length);lp.querySelector('span').textContent=D.live.length+' live';
- $('#tiles').innerHTML=[['first',o.visitors,'unique visitors'],['',o.today,'visits today'],['',o.week,'visits (7 days)'],['',o.visits,'visits all time'],['',o.questions,'questions asked'],['',o.cv,'CV opens'],['',o.calls+o.emails,'call / email taps']]
+ $('#tiles').innerHTML=[['first',o.visitors,'unique visitors'],['',o.today,'visits today'],['',o.week,'visits (7 days)'],['',o.visits,'visits all time'],['',o.questions,'questions asked'],['',o.cv,'CV opens'],['',o.calls+o.emails,'call / email taps'],['',o.bots||0,'bots filtered']]
   .map(([c,n,l])=>`<div class="tile ${c}"><b>${n}</b><span>${l}</span></div>`).join('');
- const hot=[...D.visitors].filter(v=>v.tier!=='cold').sort((a,b)=>b.score-a.score).slice(0,8);
+ const hot=[...D.visitors].filter(v=>!v.bot&&v.tier!=='cold').sort((a,b)=>b.score-a.score).slice(0,8);
  $('#hotList').innerHTML=hot.length?hot.map(vrow).join(''):'<div class="empty">No warm or hot visitors yet.</div>';
  $('#funnel').innerHTML=Object.entries(D.funnel).map(([l,f])=>{const s=[['opened','Opened'],['asked','Asked'],['cv','CV'],['contact','Contact']];
   return`<div class="row"><div class="lbl">${esc(l)} link</div><div class="fsteps">${s.map(([k,t])=>`<div class="fstep"><b>${f[k]}</b><small>${t}${f.opened?' · '+Math.round(f[k]/f.opened*100)+'%':''}</small><div class="bar" style="width:${f.opened?f[k]/f.opened*100:0}%"></div></div>`).join('')}</div></div>`}).join('')||'<div class="empty">No visits yet.</div>';
  $('#liveList').innerHTML=D.live.length?D.live.map(vrow).join(''):'<div class="empty">Nobody on the site right now.</div>';
- $('#feed').innerHTML=D.feed.length?D.feed.map(e=>`<div class="it" data-vid="${e.vid}"><span class="ic">${ICON[e.ev]||'•'}</span><div><b>${e.label?esc(e.label):'#'+e.vid.slice(0,4)}</b> · ${describe(e)} <span class="badge link">${esc(e.link)}</span></div><small>${ago(e.t)}</small></div>`).join(''):'<div class="empty">No activity yet.</div>';
- const links=['All',...new Set(D.visitors.map(v=>v.link))];
+ const botIds=new Set(D.visitors.filter(v=>v.bot).map(v=>v.vid));D.feed=D.feed.filter(e=>!botIds.has(e.vid));$('#feed').innerHTML=D.feed.length?D.feed.map(e=>`<div class="it" data-vid="${e.vid}"><span class="ic">${ICON[e.ev]||'•'}</span><div><b>${e.label?esc(e.label):'#'+e.vid.slice(0,4)}</b> · ${describe(e)} <span class="badge link">${esc(e.link)}</span></div><small>${ago(e.t)}</small></div>`).join(''):'<div class="empty">No activity yet.</div>';
+ const links=['All',...new Set(D.visitors.filter(v=>!v.bot).map(v=>v.link))];const nb=D.visitors.filter(v=>v.bot).length;
  $('#vfilters').innerHTML=links.map(l=>`<button class="chip ${filter.link===l?'on':''}" data-link="${esc(l)}">${esc(l)}</button>`).join('')+
-  `<button class="chip ${filter.sort==='recent'?'on':''}" data-sort="recent">Recent</button><button class="chip ${filter.sort==='score'?'on':''}" data-sort="score">Hottest</button>`;
- let vs=D.visitors.filter(v=>filter.link==='All'||v.link===filter.link);if(filter.sort==='score')vs=[...vs].sort((a,b)=>b.score-a.score);
+  (nb?`<button class="chip ${filter.link==='__bots'?'on':''}" data-link="__bots">Bots (${nb})</button>`:'')+`<button class="chip ${filter.sort==='recent'?'on':''}" data-sort="recent">Recent</button><button class="chip ${filter.sort==='score'?'on':''}" data-sort="score">Hottest</button>`;
+ let vs=D.visitors.filter(v=>filter.link==='__bots'?v.bot:(!v.bot&&(filter.link==='All'||v.link===filter.link)));if(filter.sort==='score')vs=[...vs].sort((a,b)=>b.score-a.score);
  $('#vcount').textContent=vs.length+' shown';$('#vlist').innerHTML=vs.length?vs.map(vrow).join(''):'<div class="empty">No visitors yet.</div>';
  bars(D.topQuestions,$('#topQ'));
  $('#gaps').innerHTML=D.gaps.length?D.gaps.map(g=>`<div class="feed"><div class="it"><span class="ic">🕳️</span><div>${esc(g.text)} ${g.failed?'<span class="badge gap">AI failed</span>':''}</div><small>×${g.count} · ${ago(g.last)}</small></div></div>`).join(''):'<div class="empty">No gaps yet. Every question was answered from your CV.</div>';

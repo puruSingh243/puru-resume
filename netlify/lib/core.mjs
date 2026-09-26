@@ -56,7 +56,7 @@ export function score(v) {
     (c.email || 0) * 12 + (c.linkedin || 0) * 5 + Math.min(10, c.cards || 0) + Math.min(15, Math.floor((v.secs || 0) / 60) * 2);
 }
 export const tier = (s) => (s >= HOT ? "hot" : s >= WARM ? "warm" : "cold");
-export const who = (v) => `Visitor #${v.vid.slice(0, 4)}${v.label ? ` (${esc(v.label)})` : ""}`;
+export const who = (v) => `Visitor ${v.vid.slice(0, 4)}${v.label ? ` (${esc(v.label)})` : ""}`;
 
 // Company network lookup (organisation that owns the IP; works mainly on office Wi-Fi)
 export async function orgOf(ip) {
@@ -77,3 +77,7 @@ export async function orgOf(ip) {
 }
 // Mobile carriers and big ISPs don't reveal a company, so we flag them.
 export const isCarrier = (org = "") => /jio|reliance|airtel|bharti|vodafone|idea|vi\b|bsnl|act fibernet|hathway|tata (play|sky)|excitel|spectra|you broadband|google|cloudflare|amazon|microsoft|comcast|t-mobile|verizon/i.test(org);
+
+// Data-centre / proxy / hosting networks: visits from these are almost always bots and scanners.
+export const isBotNet = (org = "") => /amazon|aws|google cloud|google llc|googlebot|microsoft|azure|digitalocean|ovh|hetzner|m247|code200|linode|akamai|vultr|choopa|contabo|leaseweb|oracle|alibaba|tencent|scaleway|datacamp|cdn77|psychz|quadranet|colocrossing|hostinger|hostwinds|kamatera|zenlayer|g-core|gcore|fastly|cloudflare|servers\.com|ionos|hurricane electric|equinix|cogent|tzulo|hosting|datacenter|data center|vpn|proxy|\bvps\b/i.test(org);
+export const HEADLESS = /HeadlessChrome|PhantomJS|Puppeteer|Playwright|Lighthouse|python|curl|wget|node-fetch|axios|Go-http|okhttp|Java\//i;
