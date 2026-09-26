@@ -71,7 +71,8 @@ Return ONLY valid JSON with these fields:
  "sources": ["kore","gs"],            // bracketed CV ids that support the answer; [] if none
  "topic": "fit",                      // the closest topic id from the TOPICS list, or "none"
  "followups": ["deals","eng","cv"],   // 2-3 topic ids the visitor would likely ask next (not the same as topic)
- "viz": null                          // ONLY when topic is "none": an optional simple visual, else null
+ "viz": null,                         // ONLY when topic is "none": an optional simple visual, else null
+ "covered": true                      // false if the CV did not contain the answer or you declined (salary, notice period, personal, off-topic)
 }
 If you include viz, use exactly one of these shapes, with short labels (max 20 characters each), all taken from the CV:
  {"type":"flow","title":"...","items":["step 1","step 2","step 3"]}         // 3-5 ordered steps
@@ -83,6 +84,17 @@ fit = fit for agentic AI pre-sales; deals = how he helps close deals; cxo = work
 
 CV:
 ${CV}`;
+
+import { getJSON, setJSON, telegram } from "../lib/core.mjs";
+async function healthAlert(log) {
+  try {
+    const last = await getJSON("health/last", { t: 0 });
+    if (Date.now() - (last.t || 0) < 30 * 60 * 1000) return; // at most one alert per 30 minutes
+    await setJSON("health/last", { t: Date.now() });
+    const lines = log.slice(0, 6).map((l) => "• " + l.replace(/AIza[0-9A-Za-z_-]+|gsk_[0-9A-Za-z]+/g, "[key]").replace(/[<>&]/g, "").slice(0, 140)).join("\n");
+    await telegram(`⚠️ <b>AI answers are failing on your site</b>\nVisitors are seeing the fallback message.\n${lines}`);
+  } catch (_) {}
+}
 
 const VALID = ["kore", "gs", "sse", "act", "idm", "tm", "certs", "awards", "edu"];
 const TOPICS = ["fit","deals","cxo","discovery","rfp","team","selling","bfsi","region","lead","eng","agentic","integ","voice","model","build","platforms","exp","skills","awards","creds","cv","contact"];
@@ -117,13 +129,14 @@ function parse(text) {
         topic,
         followups: (Array.isArray(o.followups) ? o.followups : []).filter((t) => TOPICS.includes(t) && t !== topic).slice(0, 3),
         viz: topic === "none" ? cleanViz(o.viz) : null,
+        covered: o.covered !== false,
       };
     }
   } catch (_) {
     const m = clean.match(/\{[\s\S]*\}/);
     if (m) { try { return parse(m[0]); } catch (_) {} }
   }
-  return { answer: clean.slice(0, 900), sources: [], topic: "none", followups: [], viz: null };
+  return { answer: clean.slice(0, 900), sources: [], topic: "none", followups: [], viz: null, covered: true };
 }
 
 async function withTimeout(promise, ms) {
@@ -213,6 +226,7 @@ export default async (req) => {
       return json(await askGroq(messages, log));
     } catch (e2) {
       console.error("both failed", JSON.stringify(log));
+      await healthAlert(log);
       const redacted = log.map((l) => l.replace(/AIza[0-9A-Za-z_-]+|gsk_[0-9A-Za-z]+/g, "[key]"));
       return json({ error: "The assistant is busy right now. Please try one of the suggested questions.", debug: redacted }, 503);
     }
