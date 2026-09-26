@@ -5,9 +5,18 @@
 [functions]
   node_bundler = "esbuild"
 
-# Clean personalised links like /paytm or /paytm/mridul serve the main page.
-# Real files (hi.html, images, CV) are served normally because this rule is not forced.
 [[redirects]]
-  from = "/*"
+  from = "/paytm"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/dashboard.html"
+  status = 200
+
+[[headers]]
+  for = "/dashboard.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
