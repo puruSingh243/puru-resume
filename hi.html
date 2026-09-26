@@ -2,6 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="utf-8">
+<base href="/">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>पुरुषोत्तम सिंह से बात करें</title>
 <meta name="description" content="Don't read my résumé. Ask it. Solutions Engineering @ Kore.ai. Agentic and conversational AI pre-sales for BFSI.">
@@ -506,7 +507,7 @@ const ALL=Object.keys(I);
 
 /* ================= personalisation ================= */
 const PROFILES={paytm:['Paytm Pi team',['fit','bfsi','deals']],bank:['banking team',['bfsi','fit','integ']],bfsi:['BFSI team',['bfsi','fit','integ']],fintech:['fintech team',['bfsi','fit','agentic']],ai:['AI product team',['agentic','build','model']],recruiter:['recruiting team',['fit','lead','exp']],sales:['sales team',['deals','cxo','rfp']],tech:['engineering team',['eng','agentic','integ']]};
-const PRO=(()=>{const p=new URLSearchParams(location.search);const raw=(p.get('for')||'').trim().slice(0,40);const k=raw.toLowerCase().replace(/[^a-z]/g,'');
+const PRO=(()=>{const p=new URLSearchParams(location.search);const _sg=location.pathname.split('/').filter(x=>x&&!/\.html?$/i.test(x));const raw=(p.get('for')||_sg[0]||'').trim().slice(0,40);const k=raw.toLowerCase().replace(/[^a-z]/g,'');
   const hit=PROFILES[k];return{who:hit?hit[0]:(raw?raw.replace(/[-_]+/g,' ')+' team':''),first:hit?hit[1]:null}})();
 if(PRO.who){$('#hello').textContent=`Hi ${PRO.who}, this chat was set up for you.`;$('#hello').classList.add('on');document.title=`Chat with Purusottam Singh · for the ${PRO.who}`}
 
@@ -588,7 +589,7 @@ async function chooseLens(g,label){if(busy)return;busy=true;lens=g;track('lens-'
 
 /* ================= conversation engine ================= */
 let busy=false;
-async function ask(k){if(busy)return;busy=true;sugs.querySelectorAll('button').forEach(b=>b.disabled=true);lastAsked[k]=++tick;track('q-'+k);closeSheet();
+async function ask(k){if(busy)return;busy=true;sugs.querySelectorAll('button').forEach(b=>b.disabled=true);lastAsked[k]=++tick;track('q-'+k);try{QLOG.push(I[k].q)}catch(e){}closeSheet();
  const Q=I[k];
  addMsg('me',`<div class="bub">${Q.q}</div><div class="meta"><span>${now()}</span><span class="seen">देखा</span></div>`);VOICE.stop();VOICE.queue(Q.q,650);
  await sleep(250);
@@ -638,6 +639,26 @@ function closeSheet(){$('#scrim').classList.remove('on');$('#sheet').classList.r
 ['#menu','#menu2','#fake'].forEach(s=>$(s).onclick=openSheet);$('#scrim').onclick=closeSheet;
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closeLB()}if(e.key==='/'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();openSheet()}});
 $('#dl').onclick=()=>{const a=document.createElement('a');a.href='Purusottam_Singh_Resume.pdf';a.download='';a.click();toast('सीवी डाउनलोड हो रहा है')};
+
+
+/* ================= visit alerts (Telegram via Netlify Function) ================= */
+const _p=new URLSearchParams(location.search);
+const _seg=location.pathname.split('/').filter(s=>s&&!/\.html?$/i.test(s));
+const LINK_RAW=(_p.get('for')||_seg[0]||'').trim().slice(0,40), LINK_TAG=(_p.get('t')||_seg[1]||'').trim().slice(0,40);
+const LINK_LABEL=(()=>{const k=LINK_RAW.toLowerCase().replace(/[^a-z]/g,'');const P={paytm:'Paytm Pi',bank:'Banking',bfsi:'BFSI',fintech:'Fintech',ai:'AI product',recruiter:'Recruiter',sales:'Sales',tech:'Engineering'};return P[k]||LINK_RAW.replace(/[-_]+/g,' ')})();
+const OWNER=(()=>{try{if(_p.get('me')==='1')localStorage.setItem('ps-owner','1');if(_p.get('me')==='0')localStorage.removeItem('ps-owner');return localStorage.getItem('ps-owner')==='1'}catch(e){return false}})();
+if(_p.has('me'))setTimeout(()=>toast(OWNER?'Owner mode on: your visits on this device won\'t send alerts':'Owner mode off'),1500);
+function ping(ev,extra={}){if(OWNER)return;const body=JSON.stringify({ev,link:LINK_LABEL,tag:LINK_TAG,page:LANG,ref:document.referrer||'',...extra});
+ try{if(ev==='summary'&&navigator.sendBeacon){navigator.sendBeacon('/.netlify/functions/notify',new Blob([body],{type:'text/plain'}));return}
+  fetch('/.netlify/functions/notify',{method:'POST',body,keepalive:true,headers:{'content-type':'text/plain'}}).catch(()=>{})}catch(e){}}
+(()=>{const key='ps-v-'+LINK_RAW+'|'+LINK_TAG;try{if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');ping('visit')}}catch(e){ping('visit')}})();
+document.addEventListener('click',e=>{const el=e.target.closest('a,button');if(!el)return;const h=el.getAttribute('href')||'';
+ if(h.startsWith('tel:'))ping('call');else if(h.startsWith('mailto:'))ping('email');else if(/linkedin\.com/i.test(h))ping('linkedin');
+ else if(/\.pdf($|\?)/i.test(h)||el.id==='dl')ping('cv')},true);
+const QLOG=[];let _qsent=0;
+function flushQs(){if(QLOG.length>_qsent){ping('summary',{qs:QLOG.slice(_qsent)});_qsent=QLOG.length}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushQs()});
+addEventListener('pagehide',flushQs);
 
 /* ================= tab bar ================= */
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{const t=b.dataset.tab;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('act',x===b));
