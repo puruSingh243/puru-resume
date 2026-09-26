@@ -2,8 +2,10 @@
 // Primary model: Google Gemini (free tier). Fallback: Groq (free tier).
 // Keys live in Netlify environment variables: GEMINI_API_KEY, GROQ_API_KEY.
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
-const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+const GEMINI_MODELS = (process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : [])
+  .concat(["gemini-2.5-flash-lite", "gemini-3.1-flash-lite-preview", "gemini-2.5-flash", "gemini-3-flash-preview"]);
+const GROQ_MODELS = (process.env.GROQ_MODEL ? [process.env.GROQ_MODEL] : [])
+  .concat(["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "qwen/qwen3-32b", "llama-3.1-8b-instant"]);
 
 const CV = `
 NAME: Purusottam Singh ("Puru"). Location: Mumbai, Maharashtra, India.
@@ -98,9 +100,10 @@ async function withTimeout(promise, ms) {
   try { return await Promise.race([promise, timeout]); } finally { clearTimeout(t); }
 }
 
-async function askGemini(messages) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) throw new Error("no gemini key");
+async function askGemini(messages, log) {
+  const key = (process.env.GEMINI_API_KEY || "").trim();
+  if (!key) { log.push("gemini: GEMINI_API_KEY not set"); throw new Error("no gemini key"); }
+  for (const GEMINI_MODEL of [...new Set(GEMINI_MODELS)]) { try {
   const contents = messages.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
   const r = await withTimeout(fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
@@ -114,17 +117,20 @@ async function askGemini(messages) {
       }),
     }
   ), 12000);
-  if (!r.ok) throw new Error("gemini " + r.status);
+  if (!r.ok) { const t = (await r.text()).slice(0, 160); log.push(`gemini ${GEMINI_MODEL}: ${r.status} ${t}`); if (r.status === 400 || r.status === 401 || r.status === 403) { if (/API key|API_KEY|permission/i.test(t)) break; } continue; }
   const d = await r.json();
   const text = d?.candidates?.[0]?.content?.parts?.map((p) => p.text || "").join("") || "";
   const out = parse(text);
-  if (!out) throw new Error("gemini empty");
+  if (!out) { log.push(`gemini ${GEMINI_MODEL}: empty`); continue; }
   return { ...out, model: "gemini" };
+  } catch (e) { log.push(`gemini ${GEMINI_MODEL}: ${e.message}`); } }
+  throw new Error("gemini failed");
 }
 
-async function askGroq(messages) {
-  const key = process.env.GROQ_API_KEY;
-  if (!key) throw new Error("no groq key");
+async function askGroq(messages, log) {
+  const key = (process.env.GROQ_API_KEY || "").trim();
+  if (!key) { log.push("groq: GROQ_API_KEY not set"); throw new Error("no groq key"); }
+  for (const GROQ_MODEL of [...new Set(GROQ_MODELS)]) { try {
   const r = await withTimeout(fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
@@ -136,11 +142,13 @@ async function askGroq(messages) {
       messages: [{ role: "system", content: SYSTEM }, ...messages],
     }),
   }), 12000);
-  if (!r.ok) throw new Error("groq " + r.status);
+  if (!r.ok) { const t = (await r.text()).slice(0, 160); log.push(`groq ${GROQ_MODEL}: ${r.status} ${t}`); if (r.status === 401) break; continue; }
   const d = await r.json();
   const out = parse(d?.choices?.[0]?.message?.content || "");
-  if (!out) throw new Error("groq empty");
+  if (!out) { log.push(`groq ${GROQ_MODEL}: empty`); continue; }
   return { ...out, model: "groq" };
+  } catch (e) { log.push(`groq ${GROQ_MODEL}: ${e.message}`); } }
+  throw new Error("groq failed");
 }
 
 export default async (req) => {
@@ -165,14 +173,16 @@ export default async (req) => {
     { role: "user", content: q },
   ];
 
+  const log = [];
   try {
-    return json(await askGemini(messages));
+    return json(await askGemini(messages, log));
   } catch (e1) {
     try {
-      return json(await askGroq(messages));
+      return json(await askGroq(messages, log));
     } catch (e2) {
-      console.error("both failed", e1?.message, e2?.message);
-      return json({ error: "The assistant is busy right now. Please try one of the suggested questions." }, 503);
+      console.error("both failed", JSON.stringify(log));
+      const redacted = log.map((l) => l.replace(/AIza[0-9A-Za-z_-]+|gsk_[0-9A-Za-z]+/g, "[key]"));
+      return json({ error: "The assistant is busy right now. Please try one of the suggested questions.", debug: redacted }, 503);
     }
   }
 };
