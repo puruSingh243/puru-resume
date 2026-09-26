@@ -250,7 +250,7 @@ details.how .ok{color:var(--green);font-weight:600}
 .file .btns2{margin-left:auto;display:flex;gap:6px}
 .file .btns2 .pill{padding:5px 12px;font-size:.88rem}
 /* lightbox */
-.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;padding:16px}
 .lb.on{display:flex;animation:fade var(--t-med) var(--ease) both}
 .lb-card{width:min(440px,100%);background:#fff;border-radius:14px;overflow:hidden;animation:rise var(--t-med) var(--ease) both;max-height:92vh;overflow-y:auto}
 .lb-cover{height:96px}
@@ -297,6 +297,54 @@ details.how .ok{color:var(--green);font-weight:600}
 .vmeta .jump{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .vmeta .jump button{border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:999px;padding:4px 12px;font-size:.82rem;font-weight:600}
 .vmeta .jump button:hover{background:var(--blue-t)}
+
+/* featured webinar on the profile card */
+.feat{margin:12px 16px 4px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.feat .vid{aspect-ratio:16/9}
+.feat .fcap{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.feat .fcap .pill{padding:4px 12px;font-size:.82rem;flex:none}
+.feat .fcap b{display:block;font-size:.92rem;font-weight:600;line-height:1.3}
+.feat .fcap small{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
+.feat .tag{position:absolute;left:10px;top:10px;z-index:2;background:#cc1016;color:#fff;font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.02em}
+.pcard .feat{margin:14px 0 0}
+
+/* Featured row (LinkedIn-style) */
+.fsec{margin:14px 0 4px}
+.fsec h3{font-size:1rem;font-weight:600;padding:0 16px 8px;display:flex;justify-content:space-between;align-items:baseline}
+.fsec h3 small{font-size:.78rem;color:var(--faint);font-weight:400}
+.frow{display:flex;gap:10px;overflow-x:auto;padding:2px 16px 10px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.frow::-webkit-scrollbar{display:none}
+.fcard{flex:none;width:210px;scroll-snap-align:start;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;text-align:left;padding:0;cursor:pointer;transition:box-shadow var(--t-fast),transform var(--t-fast)}
+.fcard:hover{box-shadow:0 4px 14px rgba(0,0,0,.1);transform:translateY(-2px)}
+.fcard:active{transform:scale(.98)}
+.fcard .fimg{position:relative;height:118px;background:#0b1b33 center/cover no-repeat}
+.fcard .fbadge{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.72);color:#fff;font-size:.68rem;font-weight:700;padding:3px 7px;border-radius:6px;letter-spacing:.02em}
+.fcard .fbadge.red{background:#cc1016}
+.fcard .fplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(10,102,194,.92);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.fcard .fplay svg{width:20px;height:20px;fill:#fff;margin-left:3px}
+.fcard .fcount{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.72);color:#fff;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:6px}
+.fcard .ftxt{padding:9px 11px 11px}
+.fcard .ftxt b{display:block;font-size:.88rem;font-weight:600;line-height:1.3}
+.fcard .ftxt small{display:block;font-size:.76rem;color:var(--muted);margin-top:3px;line-height:1.35}
+/* GFF gallery card in chat */
+.gall{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:1fr 1fr;gap:4px;padding:10px 14px 0;height:230px}
+.gall button{border:none;padding:0;border-radius:8px;background:#ddd center/cover no-repeat;cursor:zoom-in}
+.gall button:first-child{grid-row:1/3}
+/* lightbox video + gallery */
+.lb-vid{width:min(94vw,860px);aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
+.lb-vid iframe{width:100%;height:100%;border:0}
+.lb-nav{display:flex;gap:10px;justify-content:center;margin-top:12px}
+.lb-nav button{border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:7px 16px;font-weight:600}
+/* prominent ask box */
+.composer{box-shadow:0 -4px 16px rgba(0,0,0,.05)}
+.askf{background:#fff!important;border:1.5px solid var(--blue)!important;border-radius:24px!important;padding:2px 4px 2px 16px!important;min-height:46px}
+.askf input{font-size:1rem!important}
+.askf input::placeholder{color:rgba(0,0,0,.55)}
+.askf .send{background:var(--blue);color:#fff!important;border-radius:50%}
+.askf .send:hover{background:var(--blue-d)}
+.askf .send:disabled{background:#c9d6e4}
+.askf.glow{animation:askglow 1.6s var(--ease) 2}
+@keyframes askglow{50%{box-shadow:0 0 0 6px rgba(10,102,194,.22)}}
 </style>
 </head>
 <body>
@@ -350,6 +398,7 @@ details.how .ok{color:var(--green);font-weight:600}
         </div>
         <div class="hello" id="hello"></div>
         <div class="pitch"><h2>Don't read my résumé. <span>Ask it.</span></h2><p>I sell agentic AI for a living, so my résumé runs like one. Pick a question and watch it plan, pull evidence from my career, check it, and answer with sources.</p></div>
+        <div class="fsec"><h3>Featured <small>tap to open</small></h3><div class="frow"><button type="button" class="fcard" data-feat="webinar"><div class="fimg" style="background-image:url(https://i.ytimg.com/vi/gRaUc1uOTuU/hqdefault.jpg)"><span class="fbadge red">LIVE DEMO</span><span class="fplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div><div class="ftxt"><b>Live AI agent build</b><small>Gupshup webinar · starts at my part</small></div></button><button type="button" class="fcard" data-feat="gff"><div class="fimg" style="background-image:url(img/gff-demo.jpg)"><span class="fbadge ">EVENT</span><span class="fcount">3 photos</span></div><div class="ftxt"><b>Global Fintech Festival 2025</b><small>Gupshup Booth #06 · Mumbai</small></div></button><button type="button" class="fcard" data-award="0"><div class="fimg" style="background-image:url(img/award-kore.jpg)"><span class="fbadge ">AWARD</span></div><div class="ftxt"><b>Shining Star Award</b><small>Kore.ai</small></div></button><button type="button" class="fcard" data-award="1"><div class="fimg" style="background-image:url(img/award-gupshup.jpg)"><span class="fbadge ">AWARD</span></div><div class="ftxt"><b>Customer Centricity Award</b><small>Gupshup</small></div></button></div></div>
       </section>
       <div class="day">TODAY</div>
       <div id="msgs"></div>
@@ -359,7 +408,7 @@ details.how .ok{color:var(--green);font-weight:600}
       <div class="sugs" id="sugs" aria-label="Suggested questions"></div>
       <div class="inbar">
         <button class="ib" id="menu2" aria-label="All topics" data-i="grid"></button>
-        <form class="askf" id="askf" autocomplete="off"><input id="qin" maxlength="300" placeholder="Ask anything about Puru…" aria-label="Ask your own question"><button type="button" class="ib" id="mic" aria-label="Ask by voice" data-i="mic"></button><button type="submit" class="ib send" id="send" aria-label="Send" data-i="send"></button></form>
+        <form class="askf" id="askf" autocomplete="off"><input id="qin" maxlength="300" placeholder="Ask me anything about Puru…" aria-label="Ask your own question"><button type="button" class="ib" id="mic" aria-label="Ask by voice" data-i="mic"></button><button type="submit" class="ib send" id="send" aria-label="Send" data-i="send"></button></form>
         <button class="ib" id="snd" aria-label="Voice off" aria-pressed="false"></button>
       </div>
     </div>
@@ -514,6 +563,8 @@ const I={
   a:['Three generations of conversational AI stacks: Active.ai\'s <b>Morfeus</b> orchestrator and <b>Trinity</b> AI engine, <b>Gupshup Conversation Cloud</b> and CPaaS, and now the <b>Kore.ai Agent Platform</b> for agentic use cases.'],
   viz:['flow','Platforms over time',['Morfeus + Trinity','Gupshup Cloud + CPaaS','Kore.ai Agent Platform'],2],next:['agentic','voice','skills']},
  /* profile + next steps */
+ gff:{g:'p',q:'Has he represented companies at industry events?',steps:['Found his industry events','Checked his role at the booth'],src:['gs'],
+  a:['Yes. At <b>Global Fintech Festival 2025</b> in Mumbai he was on Gupshup\u2019s team at Booth #06, running <b>live demos of voice, chat and RCS</b> AI experiences.','He showed banks and fintechs how AI-powered conversations help businesses engage customers better.'],card:'gff',next:['webinar','cxo','deals']},
  webinar:{g:'p',q:'Has he presented or demoed publicly?',steps:['Found his public webinar','Checked his part in it'],src:['gs'],
   a:['Yes. In May 2025 he co-hosted a Gupshup webinar and ran a <b>live build demo</b> of Gupshup\u2019s <b>Agentic AI Builder</b>, creating a real-estate AI agent that captures and qualifies leads and books site visits.','He also explained how the platform uses <b>hybrid LLMs with guardrails and fine-tuning</b> for accuracy. The video below starts right at his part.'],card:'webinar',next:['build','agentic','deals']},
  exp:{g:'p',q:'Show me his experience',steps:['Pulled the full work history'],src:[],a:['Here\'s his experience, most recent first.'],card:'exp',next:['deals','eng','cv']},
@@ -599,7 +650,17 @@ function playWebinar(btn,start){const card=btn.closest('.card');const box=card&&
  box.innerHTML='';box.appendChild(f);box.removeAttribute('data-play');box.style.cursor='default';VOICE.stop();
  try{ping('card',{what:'webinar play from '+Math.floor(start/60)+':'+String(start%60).padStart(2,'0')})}catch(e){}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&_ytT0){_ytSecs+=(Date.now()-_ytT0)/1000;_ytT0=0;if(_ytSecs>20){try{ping('card',{what:'webinar open ~'+Math.max(1,Math.round(_ytSecs/60))+' min'},true)}catch(e){}}_ytSecs=0}});
-const CARDS={webinar:cardWebinar,exp:()=>cardExp(3),skills:cardSkills,awards:cardAwards,creds:cardCreds,cv:cardCV,contact:cardContact};
+
+/* ================= Global Fintech Festival 2025 + featured actions ================= */
+const GFF=[['img/gff-demo.jpg','Live demo at the Gupshup booth'],['img/gff-team.jpg','The Gupshup team at Booth #06'],['img/gff-booth.jpg','Gupshup’s GFF 2025 booth announcement']];
+function cardGFF(){return`<div class="card"><h4>Global Fintech Festival 2025</h4><div class="gall">${GFF.map((g,i)=>`<button type="button" data-gff="${i}" style="background-image:url(${g[0]})" aria-label="${g[1]}"></button>`).join('')}</div>
+ <div class="vmeta"><div class="sub">Gupshup Booth #06 · Jio World Centre, Mumbai · 7–9 Oct 2025</div><div class="vrole">Part of Gupshup's four-member team at India's biggest fintech event. Ran <b>live demos of voice, chat and RCS</b> AI experiences, and showed banks and fintechs how AI-powered conversations help businesses <b>engage their customers better</b>.</div><div class="sub" style="margin-top:6px"><a href="https://www.linkedin.com/company/gupshup/" target="_blank" rel="noopener">Photos: Gupshup</a></div></div></div>`}
+function openGallery(i){const n=GFF.length;const show=k=>{i=(k+n)%n;openLB(`<div class="lb-wrap"><img class="lb-img" src="${GFF[i][0]}" alt="${GFF[i][1]}"><div class="lb-cap">${GFF[i][1]} · ${i+1}/${n}</div><div class="lb-nav"><button type="button" id="gp">‹ Prev</button><button type="button" id="gn">Next ›</button></div></div>`);
+  $('#gp').onclick=e=>{e.stopPropagation();show(i-1)};$('#gn').onclick=e=>{e.stopPropagation();show(i+1)}};
+ show(i);try{ping('card',{what:'GFF photos'})}catch(e){}}
+function openVideo(start){VOICE.stop();openLB(`<div class="lb-wrap"><div class="lb-vid"><iframe src="https://www.youtube-nocookie.com/embed/${WEB.id}?start=${start}&autoplay=1&playsinline=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Gupshup webinar"></iframe></div></div>`);
+ try{ping('card',{what:'webinar play (featured) from '+Math.floor(start/60)+':'+String(start%60).padStart(2,'0')})}catch(e){}}
+const CARDS={gff:cardGFF,webinar:cardWebinar,exp:()=>cardExp(3),skills:cardSkills,awards:cardAwards,creds:cardCreds,cv:cardCV,contact:cardContact};
 
 /* ================= suggestion rotation (never runs out) ================= */
 const lastAsked={};let tick=0,lens=null;
@@ -651,6 +712,8 @@ document.querySelectorAll('[data-zoom]').forEach(el=>{el.onclick=openProfile;el.
 
 /* ================= delegated actions ================= */
 document.addEventListener('click',async e=>{
+ const ft=e.target.closest('[data-feat]');if(ft){if(ft.dataset.feat==='webinar')openVideo(WEB.start);else openGallery(0);return}
+ const gi=e.target.closest('[data-gff]');if(gi){openGallery(+gi.dataset.gff);return}
  const pl=e.target.closest('[data-play]');if(pl){playWebinar(pl,+pl.dataset.play);return}
  const aw=e.target.closest('[data-award]');if(aw){const[n,o,src]=AWARDS[+aw.dataset.award];openLB(`<div class="lb-wrap"><img class="lb-img" src="${src}" alt="${n}"><div class="lb-cap">${n} · ${o}</div></div>`);return}
  const s=e.target.closest('[data-src]');if(s&&!busy){const k=s.dataset.src;
@@ -666,7 +729,7 @@ document.addEventListener('click',async e=>{
 /* ================= sheet (all topics) ================= */
 const GROUPS=[['Deals and customers',[['deals','target'],['cxo','user'],['discovery','search'],['rfp','file'],['team','team'],['selling','handshake'],['fit','check'],['bfsi','bank'],['region','map'],['lead','layers']]],
  ['Technical depth',[['eng','code'],['agentic','flow'],['integ','plug'],['voice','wave'],['model','cpu'],['build','code'],['platforms','layers']]],
- ['Profile',[['webinar','play'],['exp','brief'],['skills','spark'],['awards','trophy'],['creds','badge']]],['Next steps',[['cv','doc'],['contact','mail']]]];
+ ['Profile',[['webinar','play'],['gff','team'],['exp','brief'],['skills','spark'],['awards','trophy'],['creds','badge']]],['Next steps',[['cv','doc'],['contact','mail']]]];
 $('#opts').innerHTML=GROUPS.map(([g,a])=>`<div class="grp">${g}</div>`+a.map(([k,icn])=>`<button class="opt" data-k="${k}">${ic(icn)}${I[k].q}</button>`).join('')).join('');
 $('#opts').addEventListener('click',e=>{const o=e.target.closest('.opt');if(o)ask(o.dataset.k)});
 function openSheet(){$('#scrim').classList.add('on');$('#sheet').classList.add('on');track('menu')}
@@ -731,7 +794,7 @@ $('#askf').addEventListener('submit',e=>{e.preventDefault();const v=$('#qin').va
   const inp=$('#qin');inp.placeholder='Listening…';mic.classList.add('on');track('mic');
   rec.onresult=e=>{let t='';for(const r of e.results){t+=r[0].transcript;if(r.isFinal)finalText=t}inp.value=t};
   rec.onerror=e=>{if(e.error!=='aborted'&&e.error!=='no-speech')toast(e.error==='not-allowed'?'Allow microphone access to ask by voice':'Couldn\'t hear that. Try again or type.')};
-  rec.onend=()=>{mic.classList.remove('on');inp.placeholder='Ask anything about Puru…';const q=(finalText||inp.value).trim();rec=null;if(q){inp.value='';askAI(q)}};
+  rec.onend=()=>{mic.classList.remove('on');inp.placeholder='Ask me anything about Puru…';const q=(finalText||inp.value).trim();rec=null;if(q){inp.value='';askAI(q)}};
   try{rec.start()}catch(_){mic.classList.remove('on');rec=null}};})();
 
 
@@ -778,12 +841,12 @@ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{const t=b.da
 (async()=>{setSugs([]);await sleep(500);
  const col=addMsg('bot','<div class="typing"><i></i><i></i><i></i></div>');await sleep(800);col.innerHTML='';
  const b=document.createElement('div');b.className='bub';col.appendChild(b);
- const GREET=[`Hi${PRO.who?' '+PRO.who:''}! Ask me anything about Puru's work.`,'Every answer comes from his CV, so nothing here is made up. Pick a question, type your own below, or tap the mic and just ask.'];
+ const GREET=[`Hi${PRO.who?' '+PRO.who:''}! <b>Ask me anything about Puru's work</b>: type it, speak it 🎤, or tap a suggestion below.`,'Every answer comes from his CV, so nothing here is made up.'];
  await streamInto(b,GREET[0]);
  await sleep(220);const b2=document.createElement('div');b2.className='bub';col.appendChild(b2);
  await streamInto(b2,GREET[1]);
  col.insertAdjacentHTML('beforeend',`<div class="meta"><span>${now()}</span></div>`);
- VOICE.queue(GREET.join(' '));scroll();setSugs([...new Set([...(PRO.first||[]),'fit','deals','agentic','cxo','eng','bfsi'])].slice(0,6));})();
+ VOICE.queue(GREET.join(' '));scroll();(()=>{const f=$('#askf');f.classList.add('glow');setTimeout(()=>f.classList.remove('glow'),3400);if(matchMedia('(pointer:fine)').matches)$('#qin').focus({preventScroll:true})})();setSugs([...new Set(['webinar',...(PRO.first||[]),'fit','deals','agentic','cxo','eng','bfsi'])].slice(0,6));})();
 </script>
 </body>
 </html>

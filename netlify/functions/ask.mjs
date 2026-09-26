@@ -49,6 +49,7 @@ Engineering: BFSI chatbot development and delivery leadership, Java, Spring Boot
 [certs] CERTIFICATIONS & TRAINING: Kore.ai Agent Platform: Agentic Apps; Kore.ai Agent Platform: AI Engineering Tools; Kore.ai Automation AI; Meta Certified Business Messaging Strategy.
 [awards] AWARDS: Shining Star Award (Kore.ai); Customer Centricity Award (Gupshup).
 [webinar] PUBLIC TALK: Gupshup webinar (May 2025), "Scaling Real Estate Lead Capturing & Appointment Booking with Gupshup Conversational AI Agents", co-hosted with Aparna Menon (Product Marketing). Puru ran a LIVE build demo of Gupshup's Agentic AI Builder, creating a real-estate AI agent for lead capture, qualification and site-visit (appointment) booking, and explained how the platform uses hybrid LLMs with guardrailing and fine-tuning for accuracy and efficiency. His part starts at 33:48 in the recording.
+[gff] INDUSTRY EVENT: Global Fintech Festival 2025 (7–9 Oct 2025, Jio World Centre, Mumbai), Gupshup Booth #06. Puru was part of Gupshup's four-member team. He ran live demos of voice, chat and RCS AI experiences, and showed banks and fintechs how AI-powered conversations help businesses engage their customers better.
 [edu] EDUCATION: Post Graduate Diploma, Advanced Computing — C-DAC, Bengaluru, 2021. Bachelor of Engineering — Sir M. Visvesvaraya Institute of Technology, Bengaluru, 2018.
 CONTACT: phone +91 91728 19763 (calls welcome); email purusottam.singh243@gmail.com; LinkedIn linkedin.com/in/puru-singh.
 `;
@@ -81,7 +82,7 @@ If you include viz, use exactly one of these shapes, with short labels (max 20 c
  {"type":"hub","title":"...","center":"Puru","items":["A","B","C","D"]}      // 3-5 related things
 
 TOPICS:
-webinar = public talks, webinars and live demos he has presented; fit = fit for agentic AI pre-sales; deals = how he helps close deals; cxo = working with CXOs and senior stakeholders; discovery = discovery and use-case scoping; rfp = RFP/RFI responses; team = working with sales, customer success and product; selling = sales instinct and early customer-facing roles; bfsi = banking/BFSI experience; region = regions covered; lead = leadership and scope growth; eng = engineering depth and stack; agentic = designing agentic solutions; integ = enterprise integrations; voice = voice and messaging channels; model = LLM/model choice; build = hands-on building; platforms = AI platforms used; exp = full work history; skills = skills list; awards = awards; creds = certifications and education; cv = the CV document; contact = contacting him.
+gff = industry events and conferences he represented a company at; webinar = public talks, webinars and live demos he has presented; fit = fit for agentic AI pre-sales; deals = how he helps close deals; cxo = working with CXOs and senior stakeholders; discovery = discovery and use-case scoping; rfp = RFP/RFI responses; team = working with sales, customer success and product; selling = sales instinct and early customer-facing roles; bfsi = banking/BFSI experience; region = regions covered; lead = leadership and scope growth; eng = engineering depth and stack; agentic = designing agentic solutions; integ = enterprise integrations; voice = voice and messaging channels; model = LLM/model choice; build = hands-on building; platforms = AI platforms used; exp = full work history; skills = skills list; awards = awards; creds = certifications and education; cv = the CV document; contact = contacting him.
 
 CV:
 ${CV}`;
@@ -98,7 +99,7 @@ async function healthAlert(log) {
 }
 
 const VALID = ["kore", "gs", "sse", "act", "idm", "tm", "certs", "awards", "edu"];
-const TOPICS = ["webinar","fit","deals","cxo","discovery","rfp","team","selling","bfsi","region","lead","eng","agentic","integ","voice","model","build","platforms","exp","skills","awards","creds","cv","contact"];
+const TOPICS = ["gff","webinar","fit","deals","cxo","discovery","rfp","team","selling","bfsi","region","lead","eng","agentic","integ","voice","model","build","platforms","exp","skills","awards","creds","cv","contact"];
 const lab = (x) => String(x ?? "").replace(/[<>]/g, "").trim().slice(0, 22);
 function cleanViz(v) {
   if (!v || typeof v !== "object" || !Array.isArray(v.items)) return null;
