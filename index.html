@@ -659,7 +659,7 @@ async function askAI(q){q=q.trim();if(!q||busy)return;busy=true;track('ai');clos
  clearInterval(tmr);col.innerHTML='';
  if(!data){const b=document.createElement('div');b.className='bub';col.appendChild(b);
   const msg=err&&err!=='offline'?err:'I couldn\'t reach the AI just now. These questions always work, so try one below.';
-  await streamInto(b,esc(msg));VOICE.queue(msg);if(/debug/.test(location.search)&&window.__dbg)col.insertAdjacentHTML('beforeend',`<div class="bub" style="font:12px monospace;background:#fff3f3">${esc(window.__dbg.join('\n')).replace(/\n/g,'<br>')}</div>`);col.insertAdjacentHTML('beforeend',`<div class="meta"><span>${now()}</span></div>`);
+  await streamInto(b,esc(msg));VOICE.queue(msg);if(window.__dbg)col.insertAdjacentHTML('beforeend',`<details class="how"><summary>Technical details</summary><div style="font:11px monospace;background:#fff3f3;padding:8px;border-radius:8px;margin-top:6px;word-break:break-word">${esc(window.__dbg.join('\n')).replace(/\n/g,'<br>')}</div></details>`);col.insertAdjacentHTML('beforeend',`<div class="meta"><span>${now()}</span></div>`);
   busy=false;$('#send').disabled=false;setSugs(pickSugs([]));return}
  col.insertAdjacentHTML('beforeend',`<span class="aitag">${ic('spark','i s')}AI answer · from his CV</span>`);
  const b=document.createElement('div');b.className='bub';col.appendChild(b);VOICE.queue(data.answer);
